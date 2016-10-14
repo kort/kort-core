@@ -7,6 +7,7 @@ env:
   - DEBUG=True
 install:
   - pip install -q -r src/api/requirements.txt
+  - pip install httpie
 before_script:
   - psql -c 'create database travis_ci_test;' -U postgres
   - cp config/database.yml.travis config/database.yml
