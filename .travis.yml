@@ -6,7 +6,7 @@ services:
 env:
   - DEBUG=True
 install:
-  - pip install -q -r requirements.txt
+  - pip install -q -r src/api/requirements.txt
   - pip install -q -e .
 before_script:
   - psql -c 'create database travis_ci_test;' -U postgres
