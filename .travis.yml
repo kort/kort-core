@@ -13,4 +13,5 @@ before_script:
   - cp config/database.yml.travis config/database.yml
 script:
   - python src/api/create_db.py
+  - python src/api/app.py > /dev/null & nosetests --with-coverage
   - sh src/api/test/test.sh
