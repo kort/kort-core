@@ -1,0 +1,152 @@
+swagger: '2.0'
+info:
+  title: Kort API
+  version: "0.1"
+consumes:
+  - application/json
+produces:
+  - application/json
+paths:
+  /user:
+    get:
+      tags: [User]
+      operationId: app.get_users
+      summary: User Login
+      parameters:
+        - name: name
+          in: query
+          type: string
+          pattern: "^[a-zA-Z0-9]*$"
+        - name: limit
+          in: query
+          type: integer
+          minimum: 0
+          default: 100
+      responses:
+        200:
+          description: Returns user
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/User'
+  /user/{user_id}:
+    get:
+      tags: [User]
+      operationId: app.get_user
+      summary: Get a single user
+      parameters:
+        - $ref: '#/parameters/user_id'
+      responses:
+        200:
+          description: Return User
+          schema:
+            $ref: '#/definitions/User'
+        404:
+          description: User does not exist
+    put:
+      tags: [User]
+      operationId: app.put_user
+      summary: Create or update a user
+      parameters:
+        - $ref: '#/parameters/user_id'
+        - name: user
+          in: body
+          schema:
+            $ref: '#/definitions/User'
+      responses:
+        200:
+          description: User updated
+        201:
+          description: New user created
+    delete:
+      tags: [User]
+      operationId: app.delete_user
+      summary: Remove a user
+      parameters:
+        - $ref: '#/parameters/user_id'
+      responses:
+        204:
+          description: User was deleted
+        404:
+          description: User does not exist
+
+
+parameters:
+  user_id:
+    name: user_id
+    description: unique user id
+    in: path
+    type: string
+    required: true
+    pattern: "^[a-zA-Z0-9-]+$"
+
+definitions:
+  User:
+    type: object
+    required:
+      - name
+      - username
+      - mission_count
+      - koin_count
+      - oauth_provider
+      - oauth_user_id
+      - pic_url
+      - secret
+      - token
+      - logged_in
+      - last_login
+    properties:
+      id:
+        type: integer
+        description: Unique identifier
+        example: 12
+        readOnly: true
+      name:
+        type: string
+        description: User's full name
+        example: "user"
+        minLength: 1
+        maxLength: 100
+      username:
+        type: string
+        description: User's full name
+        example: "user"
+        minLength: 1
+        maxLength: 100
+      mission_count:
+        type: integer
+        description: how many mission the user has finished
+        example: 2
+      koin_count:
+        type: integer
+        description: how many koins the user has
+      oauth_provider:
+        type: string
+        description: oauth provider
+        example: "google"
+      oauth_user_id:
+        type: string
+        description: oauth user id
+        example: "none"
+      pic_url:
+        type: string
+        description: url to avatar picture
+        example: "www.gravatar.com/avatar/secret?s=200&d=mm&r=r"
+      secret:
+        type: string
+        description: url to avatar picture
+        example: "asdojasdkjas"
+      token:
+        type: string
+        description: token from oauth
+        example: "kuqwelkjh"
+      logged_in:
+        type: boolean
+        description: whether the user is logged in
+        example: true
+      last_login:
+        type: string
+        format: date-time
+        description: Creation time
+        example: "2015-07-07T15:49:51.230+02:00"
+        readOnly: true
