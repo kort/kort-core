@@ -1,4 +1,4 @@
-# kort-core
+# kort-core [![Build Status](https://travis-ci.org/kort/kort-core.svg?branch=master)](https://travis-ci.org/kort/kort-core)
 Kort Native - Kort Backend for kort-native
 
 
