@@ -14,4 +14,8 @@ before_script:
 script:
   - python src/api/create_db.py
   - python src/api/app.py > /dev/null & nosetests --with-coverage
-  - sh src/api/test/test.sh
+  - sh tests/test_api.sh
+  - src/tests/test_db.py
+branches:
+  only:
+    - master

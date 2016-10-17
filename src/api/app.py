@@ -3,7 +3,7 @@ import datetime
 import logging
 import connexion
 from connexion import NoContent
-import models
+from api import models
 
 db_session = None
 
@@ -47,7 +47,7 @@ def delete_user(user_id):
 
 logging.basicConfig(level=logging.INFO)
 
-db_session = models.init_db();
+db_session = models.init_db()
 app = connexion.App(__name__)
 app.add_api('swagger.yaml')
 
