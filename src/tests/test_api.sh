@@ -8,7 +8,7 @@ if [ ! -x "$HTTP" ]; then
     exit 1
 fi
 
-URL=:5000
+URL=:5000/v0.1
 
 set -x
 
