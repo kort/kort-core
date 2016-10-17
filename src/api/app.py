@@ -3,7 +3,7 @@ import datetime
 import logging
 import connexion
 from connexion import NoContent
-from api import models
+import models
 
 db_session = None
 
