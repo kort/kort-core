@@ -2,7 +2,7 @@ from sqlalchemy import Column, DateTime, String, Integer, Boolean, create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import scoped_session, sessionmaker
 
-from configuration import BaseConfig
+from config import BaseConfig
 
 Base = declarative_base()
 

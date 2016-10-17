@@ -1,7 +1,7 @@
 # content of test_sample.py
 import pytest
 
-from api import models
+import models
 
 
 def test_db():
