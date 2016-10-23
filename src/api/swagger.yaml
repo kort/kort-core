@@ -7,8 +7,10 @@ consumes:
 produces:
   - application/json
 basePath: /v0.1
+
 paths:
-  /user:
+
+  /users:
     get:
       tags: [User]
       operationId: users.get_users
@@ -30,7 +32,7 @@ paths:
             type: array
             items:
               $ref: '#/definitions/User'
-  /user/{user_id}:
+  /users/{user_id}:
     get:
       tags: [User]
       operationId: users.get_user
@@ -71,11 +73,91 @@ paths:
         404:
           description: User does not exist
 
+  /answers:
+    get:
+      tags: [Answer]
+      operationId: answers.get_answer
+      summary: Answer types
+      parameters:
+        - name: type
+          in: query
+          type: string
+      responses:
+        200:
+          description: returns possible answers
+
+  /missions:
+    get:
+      tags: [Mission]
+      operationId: missions.get_missions
+      summary: returns all missions within the parameters given
+      parameters:
+        - name: lat
+          in: query
+          type: number
+          required: true
+        - name: lon
+          in: query
+          type: number
+          required: true
+        - name: radius
+          in: query
+          type: integer
+          required: true
+        - name: limit
+          in: query
+          type: integer
+          minimum: 0
+          default: 100
+      responses:
+        200:
+          description: Returns missions
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Mission'
+  /missions/{mission_id}:
+    get:
+      tags: [Mission]
+      operationId: missions.get_mission
+      summary: mission description
+      parameters:
+        - $ref: '#/parameters/mission_id'
+      responses:
+        200:
+          description: returns mission with given id
+
+  /highscores:
+    get:
+      tags: [Highscore]
+      operationId: highscores.get_highscore
+      summary: returns the current highscore
+      parameters:
+        - name: limit
+          in: query
+          type: integer
+          minimum: 1
+          default: 10
+      responses:
+        200:
+          description: Returns highscore
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Mission'
+
 
 parameters:
   user_id:
     name: user_id
     description: unique user id
+    in: path
+    type: string
+    required: true
+    pattern: "^[a-zA-Z0-9-]+$"
+  mission_id:
+    name: mission_id
+    description: unique mission id
     in: path
     type: string
     required: true
@@ -151,3 +233,18 @@ definitions:
         description: Creation time
         example: "2015-07-07T15:49:51.230+02:00"
         readOnly: true
+
+  Mission:
+    type: object
+    properties:
+      id:
+        type: integer
+        description: id
+        example: 12
+        readOnly: true
+      name:
+        type: string
+        description: mission description
+        example: "mission xyz"
+        minLength: 1
+        maxLength: 100

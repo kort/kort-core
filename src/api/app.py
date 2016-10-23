@@ -3,6 +3,9 @@
 import connexion
 import models
 import users
+import answers
+import missions
+import highscores
 
 db_session = models.init_db()
 app = connexion.App(__name__)
