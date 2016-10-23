@@ -11,7 +11,7 @@ paths:
   /user:
     get:
       tags: [User]
-      operationId: app.get_users
+      operationId: users.get_users
       summary: User Login
       parameters:
         - name: name
@@ -33,7 +33,7 @@ paths:
   /user/{user_id}:
     get:
       tags: [User]
-      operationId: app.get_user
+      operationId: users.get_user
       summary: Get a single user
       parameters:
         - $ref: '#/parameters/user_id'
@@ -46,7 +46,7 @@ paths:
           description: User does not exist
     put:
       tags: [User]
-      operationId: app.put_user
+      operationId: users.put_user
       summary: Create or update a user
       parameters:
         - $ref: '#/parameters/user_id'
@@ -61,7 +61,7 @@ paths:
           description: New user created
     delete:
       tags: [User]
-      operationId: app.delete_user
+      operationId: users.delete_user
       summary: Remove a user
       parameters:
         - $ref: '#/parameters/user_id'
