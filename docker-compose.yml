@@ -5,10 +5,23 @@ api:
     - "8000"
   links:
     - postgres:postgres
+    - tokeninfo:tokeninfo
   volumes:
     - /usr/src/app/static
   env_file: .env
   command: /usr/local/bin/gunicorn -w 2 -b :8000 app:app
+
+tokeninfo:
+  restart: always
+  build: ./src/api
+  expose:
+    - "7979"
+  links:
+    - postgres:postgres
+  volumes:
+    - /usr/src/app/static
+  env_file: .env
+  command: /usr/local/bin/python tokeninfo.py
 
 nginx:
   restart: always

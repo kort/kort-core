@@ -1,0 +1,28 @@
+swagger: "2.0"
+
+info:
+  title: secret token
+  version: "1.0"
+
+paths:
+  /tokeninfo:
+    get:
+      summary: secret token
+      operationId: tokeninfo.tokenAccess.get_tokeninfo
+      parameters:
+        - name: access_token
+          in: query
+          type: string
+          required: true
+      responses:
+        200:
+          description: token info object
+          schema:
+            type: object
+            properties:
+              uid:
+                type: string
+              scope:
+                type: array
+                items:
+                  type: string

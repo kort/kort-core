@@ -19,6 +19,16 @@ class BaseConfig(object):
             DB_USER, DB_PASS, DB_SERVICE, DB_PORT, DB_NAME
         )
 
+        TOKENINFO_HOST = '0.0.0.0'
+        TOKENINFO_URL = os.environ['TOKENINFO_URL']
+
+        #OAuth variables
+        GOOGLE_ID = os.environ['GOOGLE_ID']
+        GOOGLE_SECRET = os.environ['GOOGLE_SECRET']
+
+        OSM_CONSUMER_KEY = os.environ['OSM_CONSUMER_KEY']
+        OSM_CONSUMER_SECRET = os.environ['OSM_CONSUMER_SECRET']
+
     else:
         SECRET_KEY = 'mySecretKey'
         DEBUG = True
@@ -30,6 +40,8 @@ class BaseConfig(object):
         SQLALCHEMY_DATABASE_URI = 'postgresql://{0}:{1}@{2}:{3}/{4}'.format(
             DB_NAME, DB_PASSWORD, DB_SERVICE, DB_PORT, DB_NAME
         )
+
+
 
     SQLALCHEMY_TRACK_MODIFICATIONS = True
 

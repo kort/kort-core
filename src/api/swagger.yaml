@@ -13,7 +13,7 @@ paths:
   /users:
     get:
       tags: [User]
-      operationId: users.get_users
+      operationId: api.users.get_users
       summary: User Login
       parameters:
         - name: name
@@ -32,10 +32,13 @@ paths:
             type: array
             items:
               $ref: '#/definitions/User'
+      security:
+        # enable authentication and require the "uid" scope for this endpoint
+        - oauth2: ['uid']
   /users/{user_id}:
     get:
       tags: [User]
-      operationId: users.get_user
+      operationId: api.users.get_user
       summary: Get a single user
       parameters:
         - $ref: '#/parameters/user_id'
@@ -48,7 +51,7 @@ paths:
           description: User does not exist
     put:
       tags: [User]
-      operationId: users.put_user
+      operationId: api.users.put_user
       summary: Create or update a user
       parameters:
         - $ref: '#/parameters/user_id'
@@ -63,7 +66,7 @@ paths:
           description: New user created
     delete:
       tags: [User]
-      operationId: users.delete_user
+      operationId: api.users.delete_user
       summary: Remove a user
       parameters:
         - $ref: '#/parameters/user_id'
@@ -76,7 +79,7 @@ paths:
   /answers:
     get:
       tags: [Answer]
-      operationId: answers.get_answer
+      operationId: api.answers.get_answer
       summary: Answer types
       parameters:
         - name: type
@@ -89,7 +92,7 @@ paths:
   /missions:
     get:
       tags: [Mission]
-      operationId: missions.get_missions
+      operationId: api.missions.get_missions
       summary: returns all missions within the parameters given
       parameters:
         - name: lat
@@ -119,7 +122,7 @@ paths:
   /missions/{mission_id}:
     get:
       tags: [Mission]
-      operationId: missions.get_mission
+      operationId: api.missions.get_mission
       summary: mission description
       parameters:
         - $ref: '#/parameters/mission_id'
@@ -130,7 +133,7 @@ paths:
   /highscores:
     get:
       tags: [Highscore]
-      operationId: highscores.get_highscore
+      operationId: api.highscores.get_highscore
       summary: returns the current highscore
       parameters:
         - name: limit
@@ -248,3 +251,14 @@ definitions:
         example: "mission xyz"
         minLength: 1
         maxLength: 100
+
+
+
+
+securityDefinitions:
+  oauth2:
+    type: oauth2
+    flow: implicit
+    authorizationUrl: http://localhost:5000/login
+    scopes:
+      uid: Unique identifier of the user accessing the service.

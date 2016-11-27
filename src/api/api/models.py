@@ -1,8 +1,13 @@
+import os
+import sys
+
 from sqlalchemy import Column, DateTime, String, Integer, Boolean, create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import scoped_session, sessionmaker
 
-from config import BaseConfig
+from config.config import BaseConfig
+
+import datetime
 
 Base = declarative_base()
 
@@ -22,6 +27,19 @@ class User(Base):
     token               = Column(String, nullable=True)
     logged_in           = Column(Boolean, nullable=False)
     last_login          = Column(DateTime, nullable=False)
+
+    def __init__(self, name, username, oauth_provider, oauth_user_id, pic_url, secret, token):
+        self.mission_count = 0
+        self.koin_count = 0
+        self.name = name
+        self.username = username
+        self.oauth_provider = oauth_provider
+        self.oauth_user_id = oauth_user_id
+        self.pic_url = pic_url
+        self.secret = secret
+        self.token = token
+        self.logged_in = True
+        self.last_login = datetime.datetime.utcnow()
 
 
     def update(self, id=None, name=None, username=None,
