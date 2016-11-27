@@ -8,17 +8,8 @@ from sqlalchemy.orm import scoped_session, sessionmaker
 
 try:
     from config.config import BaseConfig
-except SystemError:
-    sys.path.append(os.path.dirname(__file__))
-    try:
-    except ImportError:
-        try:
-            from config import BaseConfig
-        finally:
-            sys.path.remove(os.path.dirname(__file__))
-    finally:
-        sys.path.remove(os.path.dirname(__file__))
-
+except ImportError:
+    from config import BaseConfig
 
 import datetime
 
