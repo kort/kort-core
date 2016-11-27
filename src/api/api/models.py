@@ -5,7 +5,20 @@ from sqlalchemy import Column, DateTime, String, Integer, Boolean, create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import scoped_session, sessionmaker
 
-from config.config import BaseConfig
+
+try:
+    from config.config import BaseConfig
+except SystemError:
+    sys.path.append(os.path.dirname(__file__))
+    try:
+    except ImportError:
+        try:
+            from config import BaseConfig
+        finally:
+            sys.path.remove(os.path.dirname(__file__))
+    finally:
+        sys.path.remove(os.path.dirname(__file__))
+
 
 import datetime
 
