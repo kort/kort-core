@@ -9,7 +9,7 @@ from sqlalchemy.orm import scoped_session, sessionmaker
 try:
     from config.config import BaseConfig
 except ImportError:
-    from config import BaseConfig
+    from api.config.config import BaseConfig
 
 import datetime
 
