@@ -43,5 +43,15 @@ class BaseConfig(object):
 
 
 
+        #OAuth variables
+        GOOGLE_ID = os.environ['GOOGLE_ID']
+        GOOGLE_SECRET = os.environ['GOOGLE_SECRET']
+
+        OSM_CONSUMER_KEY = os.environ['OSM_CONSUMER_KEY']
+        OSM_CONSUMER_SECRET = os.environ['OSM_CONSUMER_SECRET']
+
+        TOKENINFO_HOST = '0.0.0.0'
+        TOKENINFO_URL = os.environ['TOKENINFO_URL']
+
     SQLALCHEMY_TRACK_MODIFICATIONS = True
 
