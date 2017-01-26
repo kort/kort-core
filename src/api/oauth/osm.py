@@ -28,15 +28,14 @@ osm = oauth.remote_app(
 
 @osm_oauth_provider.route('/osm/login')
 def home():
-    if 'example_oauth' in session:
-        resp = osm.get('me')
-        return jsonify(resp.data)
     return osm.authorize(callback=url_for('.authorized', _external=True))
 
 
 @osm_oauth_provider.route('/osm/login/authorized')
 @osm.authorized_handler
 def authorized(resp):
+    print('go back')
+
     if resp is None:
         return 'Access denied: error=%s' % (
             request.args['error']
@@ -45,6 +44,7 @@ def authorized(resp):
         session['example_oauth'] = resp
         # return jsonify(resp)
         userinfo = getUserInfo(session['example_oauth'])
+        print(userinfo)
         user = user_access.get_user_secret('osm', userinfo['id'])
         if user:
             # update user details
@@ -53,8 +53,10 @@ def authorized(resp):
             print('updated')
         else:
             secret = user_access.create_user('osm', json.dumps(userinfo), userinfo['oauth_token'])
-        return jsonify({"secret": secret})
-    return str(resp)
+        # return jsonify({"secret": secret})
+        return redirect("kortapp://secret?" + secret, code=302)
+    return redirect("kortapp://secret?" + 'bla', code=302)
+
 
 
 @osm.tokengetter

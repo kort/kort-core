@@ -11,9 +11,9 @@ def update_user(provider: str, secret: str, data: str):
     #TODO token also to be updated?
     if provider is 'google':
         user = db_session.query(api.models.User).filter(api.models.User.secret == secret).one_or_none()
-        user.pic_url = data['picture']
-        user.name = data['name']
-        user.username = data['email']
+        user.pic_url = data.get('picture', user.pic_url)
+        user.name = data.get('name', user.name)
+        user.username = data.get('email', user.username)
         user.last_login = datetime.datetime.utcnow()
         db_session.commit()
     if provider is 'osm':

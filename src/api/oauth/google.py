@@ -1,5 +1,6 @@
 from flask import Blueprint, redirect, url_for, session, request, jsonify
 from flask_oauthlib.client import OAuth
+import requests
 
 google_oauth_provider = Blueprint('google_oauth_provider', __name__)
 
@@ -23,6 +24,30 @@ google = oauth.remote_app(
     access_token_url='https://accounts.google.com/o/oauth2/token',
     authorize_url='https://accounts.google.com/o/oauth2/auth',
 )
+verifyURL = 'https://www.googleapis.com/oauth2/v3/tokeninfo'
+
+
+@google_oauth_provider.route('/google/verify', methods=['POST'])
+def verifyUserId():
+    print(request)
+    token = request.get_json().get('tokenId')
+    print(token)
+    payload = {'id_token': token}
+    req = requests.get(verifyURL, payload)
+    data = req.json()
+    print(data)
+    id = data['sub']
+    print(data)
+    user = user_access.get_user_secret('google', id)
+    if user:
+        # update user details
+        print('update')
+        secret = user.secret
+        user_access.update_user('google', secret, data)
+    else:
+        print('create')
+        secret = user_access.create_user('google', data, payload['id_token'])
+    return jsonify({"secret": secret})
 
 
 @google_oauth_provider.route('/google/login')
@@ -33,6 +58,7 @@ def login():
 @google_oauth_provider.route('/google/login/authorized')
 def authorized():
     resp = google.authorized_response()
+    print(resp)
     if resp is None:
         return 'Access denied: reason=%s error=%s' % (
             request.args['error_reason'],
