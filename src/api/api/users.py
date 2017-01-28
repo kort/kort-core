@@ -15,8 +15,12 @@ def get_users(limit, name=None):
 
 
 def get_user(user_id):
-    user = db_session.query(api.models.User).filter(api.models.User.id == user_id).one_or_none()
-    return user.dump() or ('Not found', 404)
+    secret = request.headers.get('Authorization')
+    user = db_session.query(api.models.User).filter(api.models.User.id == user_id). \
+        filter(api.models.User.secret == secret).one_or_none()
+    if user:
+        return user.dump()
+    return ('Unauthorized', 401)
 
 
 def put_user(user_id, user):
