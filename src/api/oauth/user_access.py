@@ -24,7 +24,7 @@ def update_user(provider: str, secret: str, data: str):
         user.username = d.get('display_name', '')
         user.last_login = datetime.datetime.utcnow()
         db_session.commit()
-    return None
+    return user
 
 
 def create_user(provider: str, data: str, token: str) -> str:
@@ -39,7 +39,7 @@ def create_user(provider: str, data: str, token: str) -> str:
         user = api.models.User(d['display_name'], d['display_name'], provider, d['id'], d.get('img', ''), secret, token)
         db_session.add(user)
         db_session.commit()
-    return secret
+    return user
 
 def generate_secret() -> str:
     return 'the_super_secret'+datetime.datetime.utcnow().strftime('%Y-%m-%d%H:%M:%S.%f')[:-3]

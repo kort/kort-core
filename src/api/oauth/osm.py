@@ -25,6 +25,9 @@ osm = oauth.remote_app(
     authorize_url='https://www.openstreetmap.org/oauth/authorize',
 )
 
+deepLinkURL = 'kortapp://payload'
+deepLinkSecret = 'secret'
+deepLinkUserId = 'userId'
 
 @osm_oauth_provider.route('/osm/login')
 def home():
@@ -48,14 +51,14 @@ def authorized(resp):
         user = user_access.get_user_secret('osm', userinfo['id'])
         if user:
             # update user details
-            secret = user.secret
-            user_access.update_user('osm', secret,  json.dumps(userinfo))
+            user_access.update_user('osm', user.secret,  json.dumps(userinfo))
             print('updated')
         else:
-            secret = user_access.create_user('osm', json.dumps(userinfo), userinfo['oauth_token'])
+            user = user_access.create_user('osm', json.dumps(userinfo), userinfo['oauth_token'])
         # return jsonify({"secret": secret})
-        return redirect("kortapp://secret?" + secret, code=302)
-    return redirect("kortapp://secret?" + 'bla', code=302)
+        url = ('{}?{}={}&{}={}'.format(deepLinkURL, deepLinkSecret, user.secret, deepLinkUserId, user.id))
+        return redirect(url, code=302)
+    return redirect(deepLinkURL+"error?", code=302)
 
 
 

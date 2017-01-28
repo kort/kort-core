@@ -42,12 +42,12 @@ def verifyUserId():
     if user:
         # update user details
         print('update')
-        secret = user.secret
-        user_access.update_user('google', secret, data)
+        user_access.update_user('google', user.secret, data)
+        print('user ', user.id, 'secret ', user.secret)
     else:
         print('create')
-        secret = user_access.create_user('google', data, payload['id_token'])
-    return jsonify({"secret": secret})
+        user = user_access.create_user('google', data, payload['id_token'])
+    return jsonify(user)
 
 
 @google_oauth_provider.route('/google/login')
