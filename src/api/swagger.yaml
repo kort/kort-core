@@ -173,6 +173,7 @@ definitions:
       - name
       - username
       - mission_count
+      - mission_count_today
       - koin_count
       - oauth_provider
       - oauth_user_id
@@ -202,6 +203,10 @@ definitions:
       mission_count:
         type: integer
         description: how many mission the user has finished
+        example: 2
+      mission_count_today:
+        type: integer
+        description: how many mission the user has finished today
         example: 2
       koin_count:
         type: integer

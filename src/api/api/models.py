@@ -17,6 +17,7 @@ class User(Base):
 
     id                  = Column(Integer, primary_key=True)
     mission_count       = Column(Integer, nullable=False)
+    mission_count_today = Column(Integer, nullable=False)
     koin_count          = Column(Integer, nullable=False)
     name                = Column(String, nullable=False)
     username            = Column(String, nullable=False)
@@ -30,6 +31,7 @@ class User(Base):
 
     def __init__(self, name, username, oauth_provider, oauth_user_id, pic_url, secret, token):
         self.mission_count = 0
+        self.mission_count_today = 0
         self.koin_count = 0
         self.name = name
         self.username = username
@@ -45,7 +47,7 @@ class User(Base):
     def update(self, id=None, name=None, username=None,
                last_login=None, pic_url=None, token=None,
                logged_in=None, secret=None, oauth_provider=None,
-               oauth_user_id=None, mission_count=None, koin_count=None):
+               oauth_user_id=None, mission_count=None, mission_count_today=None, koin_count=None):
         if name is not None:
             self.name = name
         if username is not None:
