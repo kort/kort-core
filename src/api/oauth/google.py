@@ -47,7 +47,7 @@ def verifyUserId():
     else:
         print('create')
         user = user_access.create_user('google', data, payload['id_token'])
-    return jsonify(userId=user.id, secret=user.secret)
+    return jsonify(id=user.id, secret=user.secret)
 
 
 @google_oauth_provider.route('/google/login')
