@@ -130,12 +130,16 @@ paths:
         200:
           description: returns mission with given id
 
-  /highscores:
+  /highscore:
     get:
       tags: [Highscore]
       operationId: api.highscores.get_highscore
       summary: returns the current highscore
       parameters:
+        - name: type
+          in: query
+          type: string
+          default: 'day'
         - name: limit
           in: query
           type: integer
@@ -148,6 +152,15 @@ paths:
             type: array
             items:
               $ref: '#/definitions/Mission'
+
+  /achievements:
+    get:
+      tags: [Achievements]
+      operationId: api.achievements.get_achievements
+      summary: returns the achievements
+      responses:
+        200:
+          description: Returns achievements
 
 
 parameters:
