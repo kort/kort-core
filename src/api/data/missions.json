@@ -178,7 +178,7 @@
     "osmId" : 213423,
     "osmType": "way",
     "koinReward": 1,
-    "image": "mission_road"
+    "image": "mission_opening_hours"
 },
     {
     "id" : "mission_id_9",
@@ -203,6 +203,6 @@
     "osmId" : 25690865,
     "osmType": "way",
     "koinReward": 2,
-    "image": "mission_religion"
+    "image": "mission_road"
 }
 ]
