@@ -162,6 +162,11 @@ paths:
       tags: [Achievements]
       operationId: api.achievements.get_achievements
       summary: returns the achievements
+      parameters:
+        - name: lang
+          in: query
+          type: string
+          default: 'en'
       responses:
         200:
           description: Returns achievements
@@ -263,18 +268,84 @@ definitions:
     type: object
     properties:
       id:
-        type: integer
+        type: string
         description: id
         example: 12
         readOnly: true
-      name:
+      osmId:
+        type: integer
+        description: "The unique OSM id"
+      osmType:
         type: string
-        description: mission description
-        example: "mission xyz"
-        minLength: 1
-        maxLength: 100
-
-
+      type:
+        type: string
+        description: mission type
+        example: "mission_building_floors"
+      title:
+        type: string
+        description: mission title for display
+        example: "Missing Building Floors"
+      question:
+        type: string
+        description: question
+        example: "How many floors has this building?"
+      geomType:
+        type: string
+        description: geometry type
+        example: "point"
+      annotationCoordinate:
+        type: array
+        items:
+          type: number
+        description: lat/lon array of annotation
+        example: [46.817812, 9.852413]
+      coordinates:
+        type: array
+        items:
+          type: number
+        description: lat/lon array of geometry
+        example: [46.817812, 9.852413]
+      koinReward:
+        type: integer
+        description: number of koins as reward
+        example: 1
+      image:
+        type: string
+        description: the image file for the annotation either as URL or local filename for app
+        example: "mission_floors"
+      inputType:
+        type: object
+        properties:
+          name:
+            type: string
+            description: name of the input type (number|select|text)
+            example: "number"
+          options:
+            type: array
+            items:
+              type: string
+            description: the selection to choose from
+            example: [ "Italian", "Chinese", "Italian", "Swiss", "Thai" ]
+          values:
+            type: array
+            items:
+              type: string
+            description: the corresponding values of each selection
+            example: [ "type1", "type2", "type3", "type4", "type5" ]
+          constraints:
+            type: object
+            properties:
+              description:
+                type: string
+                description: the localized message that is shown to the user if validation fails
+                example: "Number must be between 1 and 100"
+              re:
+                type: string
+                description: the regular expression in place
+              lowerBound:
+                type: integer
+              upperBound:
+                type: integer
 
 
 securityDefinitions:
