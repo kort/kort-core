@@ -56,7 +56,9 @@ def authorized(resp):
         else:
             user = user_access.create_user('osm', json.dumps(userinfo), userinfo['oauth_token'])
         # return jsonify({"secret": secret})
-        url = ('{}?{}={}&{}={}'.format(deepLinkURL, deepLinkSecret, user.secret, deepLinkUserId, user.id))
+        print('create url')
+        url = ('{}?{}={}&{}={}'.format(deepLinkURL, deepLinkSecret, user.secret, deepLinkUserId, user.user_id))
+        print(url)
         return redirect(url, code=302)
     return redirect(deepLinkURL+"error?", code=302)
 

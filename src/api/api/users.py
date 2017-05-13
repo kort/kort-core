@@ -16,15 +16,16 @@ def get_users(limit, name=None):
 
 def get_user(user_id):
     secret = request.headers.get('Authorization')
-    user = db_session.query(api.models.User).filter(api.models.User.id == user_id). \
+    user = db_session.query(api.models.User).filter(api.models.User.user_id == user_id). \
         filter(api.models.User.secret == secret).one_or_none()
     if user:
+        print(user)
         return user.dump()
     return ('Unauthorized', 401)
 
 
 def put_user(user_id, user):
-    p = db_session.query(api.models.User).filter(api.models.User.id == user_id).one_or_none()
+    p = db_session.query(api.models.User).filter(api.models.User.user_id == user_id).one_or_none()
     user['id'] = user_id
     if p is not None:
         logging.info('Updating user %s..', user_id)
@@ -38,10 +39,10 @@ def put_user(user_id, user):
 
 
 def delete_user(user_id):
-    user = db_session.query(api.models.User).filter(api.models.User.id == user_id).one_or_none()
+    user = db_session.query(api.models.User).filter(api.models.User.user_id == user_id).one_or_none()
     if user is not None:
         logging.info('Deleting user %s..', user_id)
-        db_session.query(api.models.User).filter(api.models.User.id == user_id).delete()
+        db_session.query(api.models.User).filter(api.models.User.user_id == user_id).delete()
         db_session.commit()
         return NoContent, 204
     else:
