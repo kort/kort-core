@@ -43,11 +43,11 @@ def verifyUserId():
         # update user details
         print('update')
         user_access.update_user('google', user.secret, data)
-        print('user ', user.user_id, 'secret ', user.secret)
+        print('user ', user.id, 'secret ', user.secret)
     else:
         print('create')
         user = user_access.create_user('google', data, payload['id_token'])
-    return jsonify(id=user.user_id, secret=user.secret)
+    return jsonify(id=user.id, secret=user.secret)
 
 
 @google_oauth_provider.route('/google/login')
@@ -68,6 +68,7 @@ def authorized():
     #check if user exists or create a new one
     session['google_token'] = (resp['access_token'], '')
     me = google.get('userinfo')
+    print('google data', me)
     user = user_access.get_user_secret('google', me.data['id'])
     if user:
         # update user details

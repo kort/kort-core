@@ -2,6 +2,8 @@ import api.models
 db_session = api.models.init_db()
 import datetime
 import json
+import logging
+
 
 def get_user_secret(provider: str, id: str) -> object:
     user = db_session.query(api.models.User).filter(api.models.User.oauth_user_id == id).filter(api.models.User.oauth_provider == provider).one_or_none()
@@ -30,9 +32,14 @@ def update_user(provider: str, secret: str, data: str):
 def create_user(provider: str, data: str, token: str) -> str:
     if provider is 'google':
         secret = generate_secret()
-        user = api.models.User(data['name'], data['email'], provider, data['id'], data['picture'], secret, token)
-        db_session.add(user)
-        db_session.commit()
+        print('data', data, token)
+        try:
+            user = api.models.User(data['name'], data['email'], provider, data['kid'], data['picture'], secret, token)
+            print(user)
+            db_session.add(user)
+            db_session.commit()
+        except Exception as e:
+            logging.exception("message")
     if provider is 'osm':
         d = json.loads(data)
         secret = generate_secret()
