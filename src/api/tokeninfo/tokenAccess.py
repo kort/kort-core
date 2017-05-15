@@ -10,5 +10,5 @@ def get_tokeninfo(access_token: str) -> dict:
 
 def get_user_by_secret(secret: str):
     user = db_session.query(models.User).filter(models.User.secret == secret).one_or_none()
-    print(user.id)
-    return user.id
+    print(user.user_id)
+    return user.user_id
