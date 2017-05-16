@@ -1,6 +1,3 @@
-import os
-import sys
-import json
 from sqlalchemy import Column, DateTime, String, Integer, BigInteger, Boolean, create_engine, UniqueConstraint, Numeric
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import scoped_session, sessionmaker
@@ -16,12 +13,14 @@ from .MissionTypeLoader import MissionTypeLoader
 
 Base = declarative_base()
 
+
 def init_db():
     engine = create_engine(BaseConfig.SQLALCHEMY_DATABASE_URI, convert_unicode=True)
     db_session = scoped_session(sessionmaker(autocommit=False, autoflush=False, bind=engine))
     Base.query = db_session.query_property()
     Base.metadata.create_all(bind=engine)
     return db_session
+
 
 class User(Base):
 
@@ -63,6 +62,7 @@ class User(Base):
     def __str__(self):
         return str(self.dump())
 
+
 class kort_errors(Base):
 
     __table_args__ = {'schema': 'kort'}
@@ -87,7 +87,6 @@ class kort_errors(Base):
     txt4                   = Column(String, primary_key=False)
     txt5                   = Column(String, primary_key=False)
 
-
     def dump(self, lang):
         d = dict([(k, v) for k, v in vars(self).items() if not k.startswith('_') and not k == 'geom'])
         d['id'] = 's'+str(d.pop('schema'))+'id'+str(d.pop('id'))
@@ -105,6 +104,7 @@ class kort_errors(Base):
 
         return d
 
+
 class Answer(Base):
 
     __table_args__ = {'schema': 'kort'}
@@ -115,6 +115,7 @@ class Answer(Base):
     value                    = Column(String, primary_key=False)
     title                    = Column(String, primary_key=False)
     sorting                    = Column(Integer, primary_key=False)
+
 
 class Solution(Base):
 
