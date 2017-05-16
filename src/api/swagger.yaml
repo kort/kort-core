@@ -61,16 +61,27 @@ paths:
             type: array
             items:
               $ref: '#/definitions/Mission'
-  /missions/{mission_id}:
+  /missions/{mission_id}/solution:
     put:
       tags: [Mission]
       operationId: api.missions.put_mission
       summary: mission description
       parameters:
         - $ref: '#/parameters/mission_id'
+        - name: solution
+          in: body
+          schema:
+            $ref: '#/definitions/Solution'
       responses:
         200:
           description: submit a mission solution
+      responses:
+        200:
+          description: Returns newly aquired achievements
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Achievement'
 
   /highscore:
     get:
@@ -107,7 +118,11 @@ paths:
           default: 'en'
       responses:
         200:
-          description: Returns achievements
+          description: Returns newly aquired achievements if any
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Achievement'
 
 
 parameters:
@@ -280,3 +295,45 @@ definitions:
               re:
                 type: string
                 description: the regular expression in place
+
+  Solution:
+    type: object
+    properties:
+      value:
+        type: string
+        description: id
+      koins:
+        type: integer
+        description: number of koins earned
+      solved:
+        type: boolean
+        description: whether the mission was solved or not
+      user_id:
+        type: integer
+        description: unique user id
+      osm_id:
+        type: number
+        description: the unique osm id
+
+  Achievement:
+    type: object
+    properties:
+      achievementId:
+        type: integer
+        description: achievement id
+      achievementTitle:
+        type: string
+        description: achievement title
+      achievementDescription:
+        type: string
+        description: achievement description
+      achievementImageURI:
+        type: string
+        description: uri for the badge icon
+      achieved:
+        type: boolean
+        description: whether or not the achievement has been achieved
+      achievementDate:
+        type: string
+        format: date-time
+        description: the date on which the achievement has been achieved
