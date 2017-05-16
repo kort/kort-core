@@ -10,7 +10,9 @@ from config.config import BaseConfig
 
 import datetime
 
-from .missionTypes import MissionTypes
+from src.api.i18n import I18n
+
+from .MissionTypeLoader import MissionTypeLoader
 
 Base = declarative_base()
 
@@ -65,48 +67,6 @@ class User(Base):
     def __str__(self):
         return str(self.dump())
 
-class Mission(Base):
-
-    __tablename__ = 'missions'
-    __table_args__ = {'schema': 'kort'}
-
-    error_id                = Column(Integer, primary_key=True)
-    schema                  = Column(String, primary_key=True)
-    type                    = Column(Integer, nullable=False)
-    geom                    = Column(Geometry, nullable=False)
-    geo_json                 = Column(String, nullable=False)
-    osm_id                   = Column(BigInteger, primary_key=True)
-    osm_type                 = Column(String, nullable=False)
-
-    def __init__(self, error_id, schema, type, geom, geo_json, osm_id, osm_type):
-        self.error_id = error_id
-        self.schema = schema
-        self.type = type
-        self.osm_id = osm_id
-        self.osm_type = osm_type
-        self.geom = geom
-        self.geo_json = geo_json
-
-    def dump(self):
-        d = dict([(k, v) for k, v in vars(self).items() if not k.startswith('_') and not k == 'geom'])
-
-        postgis2mapboxGeometry = {'Point': 'point', 'LineString': 'line'}
-        geoJSON = json.loads(d['geo_json'])
-
-        d['id'] = 'kr'+str(d['schema'])+'-'+str(d['error_id'])
-        d['coordinates'] = [geoJSON['coordinates'][1], geoJSON['coordinates'][0]]
-        d['annotationCoordinate'] = [geoJSON['coordinates'][1], geoJSON['coordinates'][0]]
-        d['geomType'] = postgis2mapboxGeometry[geoJSON['type']]
-
-        mt = MissionTypes()
-        d['inputType'] = mt.getInputType(d['type'])
-        d['question'] = mt.getQuestion(d['type'])
-        d['image'] = mt.getImage(d['type'])
-        d['title'] = mt.getTitle(d['type'])
-        d['type'] = mt.getType(d['type'])
-        d['koinReward'] = 1
-        return d
-
 class kort_errors(Base):
 
     __table_args__ = {'schema': 'kort'}
@@ -117,29 +77,49 @@ class kort_errors(Base):
     type                    = Column(String, primary_key=False)
     osmId                   = Column('osm_id', BigInteger, primary_key=False)
     osmType                 = Column('osm_type', String, primary_key=False)
+    question                 = Column('description', String, primary_key=False)
     title                   = Column(String, primary_key=False)
     view_type               = Column(String, primary_key=False)
     answer_placeholder      = Column(String, primary_key=False)
-    description             = Column(String, primary_key=False)
     fix_koin_count          = Column(Integer, primary_key=False)
     geom                    = Column(Geometry, nullable=False)
     latitude                = Column(Numeric, primary_key=False)
     longitude               = Column(Numeric, primary_key=False)
+    txt1                   = Column(String, primary_key=False)
+    txt2                   = Column(String, primary_key=False)
+    txt3                   = Column(String, primary_key=False)
+    txt4                   = Column(String, primary_key=False)
+    txt5                   = Column(String, primary_key=False)
 
 
-    def dump(self):
+    def dump(self, lang):
         d = dict([(k, v) for k, v in vars(self).items() if not k.startswith('_') and not k == 'geom'])
         d['id'] = 's'+str(d.pop('schema'))+'id'+str(d.pop('id'))
         d['annotationCoordinate'] = [float(d.pop('latitude')), float(d.pop('longitude'))]
         d['geomType'] = 'point' if d['osmType'] == 'node' else 'line'
         d['koinReward'] = d.pop('fix_koin_count')
 
-        mt = MissionTypes()
-        d['inputType'] = mt.getInputType(d['type'])
-        d['question'] = mt.getQuestion(d['type'])
-        d['image'] = mt.getImage(d['type'])
+        locale = I18n.I18n()
+        d['question'] = locale.translateQuestion(lang, d['question'], d.pop('txt1'), d.pop('txt2'), d.pop('txt3'), d.pop('txt4'), d.pop('txt5'))
+        d['title'] = locale.translate(lang, d['title'])
+
+        metda = MissionTypeLoader()
+        d['inputType'] = metda.getInputType(lang, d['type'], d.pop('view_type'))
+        d['image'] = metda.getImage(d['type'])
 
         return d
+
+class Answer(Base):
+
+    __table_args__ = {'schema': 'kort'}
+    __tablename__ = 'select_answer'
+
+    id                      = Column(Integer, primary_key=True)
+    type                    = Column(String, primary_key=False)
+    value                    = Column(String, primary_key=False)
+    title                    = Column(String, primary_key=False)
+    sorting                    = Column(Integer, primary_key=False)
+
 
 
 def init_db():
