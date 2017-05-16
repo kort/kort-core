@@ -16,6 +16,13 @@ from .MissionTypeLoader import MissionTypeLoader
 
 Base = declarative_base()
 
+def init_db():
+    engine = create_engine(BaseConfig.SQLALCHEMY_DATABASE_URI, convert_unicode=True)
+    db_session = scoped_session(sessionmaker(autocommit=False, autoflush=False, bind=engine))
+    Base.query = db_session.query_property()
+    Base.metadata.create_all(bind=engine)
+    return db_session
+
 class User(Base):
 
     __tablename__ = 'user'
@@ -49,17 +56,6 @@ class User(Base):
         self.token = token
         self.logged_in = True
         self.last_login = datetime.datetime.utcnow()
-
-    def update(self, id=None, name=None, username=None,
-               last_login=None, pic_url=None, token=None,
-               logged_in=None, secret=None, oauth_provider=None,
-               oauth_user_id=None, mission_count=None, mission_count_today=None, koin_count=None):
-        if name is not None:
-            self.name = name
-        if username is not None:
-            self.username = username
-        if last_login is not None:
-            self.last_login = last_login
 
     def dump(self):
         return dict([(k, v) for k, v in vars(self).items() if not k.startswith('_')])
@@ -120,11 +116,20 @@ class Answer(Base):
     title                    = Column(String, primary_key=False)
     sorting                    = Column(Integer, primary_key=False)
 
+class Solution(Base):
+
+    __table_args__ = {'schema': 'kort'}
+    __tablename__ = 'fix'
+
+    id                         = Column(Integer, primary_key=True)
+    user_id                    = Column(Integer, primary_key=False)
+    create_date                = Column(DateTime, nullable=False)
+    error_id                   = Column(Integer, primary_key=False)
+    schema                     = Column(String, primary_key=False)
+    osmId                      = Column('osm_id', BigInteger, primary_key=False)
+    solution                   = Column(String, primary_key=False)
+    complete                   = Column(Boolean, nullable=False)
+    valid                      = Column(Boolean, nullable=False)
+    in_osm                     = Column(Boolean, nullable=False)
 
 
-def init_db():
-    engine = create_engine(BaseConfig.SQLALCHEMY_DATABASE_URI, convert_unicode=True)
-    db_session = scoped_session(sessionmaker(autocommit=False, autoflush=False, bind=engine))
-    Base.query = db_session.query_property()
-    Base.metadata.create_all(bind=engine)
-    return db_session
