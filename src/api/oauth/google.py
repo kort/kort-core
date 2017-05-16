@@ -39,6 +39,8 @@ def verifyUserId():
     id = data['sub']
     print(data)
     user = user_access.get_user_secret('google', id)
+    print('verified')
+    print(user)
     if user:
         # update user details
         print('update')

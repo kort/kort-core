@@ -34,7 +34,7 @@ def create_user(provider: str, data: str, token: str) -> str:
         secret = generate_secret()
         print('data', data, token)
         try:
-            user = api.models.User(data['name'], data['email'], provider, data['kid'], data['picture'], secret, token)
+            user = api.models.User(data['name'], data['email'], provider, data['sub'], data['picture'], secret, token)
             print(user)
             db_session.add(user)
             db_session.commit()
