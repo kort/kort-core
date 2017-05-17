@@ -2,7 +2,7 @@
 import os
 import sys
 
-from api import models, users, answers, missions, highscores
+from api import models, users, missions, highscores
 
 import connexion
 from config.config import BaseConfig

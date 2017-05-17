@@ -68,7 +68,7 @@ class kort_errors(Base):
     __table_args__ = {'schema': 'kort'}
     __tablename__ = 'errors'
 
-    id                      = Column(Integer, primary_key=True)
+    errorId                  = Column('id', Integer, primary_key=True)
     schema                  = Column(String, primary_key=False)
     type                    = Column(String, primary_key=False)
     osmId                   = Column('osm_id', BigInteger, primary_key=False)
@@ -89,7 +89,9 @@ class kort_errors(Base):
 
     def dump(self, lang):
         d = dict([(k, v) for k, v in vars(self).items() if not k.startswith('_') and not k == 'geom'])
-        d['id'] = 's'+str(d.pop('schema'))+'id'+str(d.pop('id'))
+        print(d)
+        d['id'] = 's'+d['schema']+'id'+str(d['errorId'])
+        print('ok')
         d['annotationCoordinate'] = [float(d.pop('latitude')), float(d.pop('longitude'))]
         d['geomType'] = 'point' if d['osmType'] == 'node' else 'line'
         d['koinReward'] = d.pop('fix_koin_count')
@@ -122,15 +124,26 @@ class Solution(Base):
     __table_args__ = {'schema': 'kort'}
     __tablename__ = 'fix'
 
-    id                         = Column(Integer, primary_key=True)
+    id                         = Column('fix_id', Integer, primary_key=True)
     user_id                    = Column(Integer, primary_key=False)
     create_date                = Column(DateTime, nullable=False)
     error_id                   = Column(Integer, primary_key=False)
     schema                     = Column(String, primary_key=False)
     osmId                      = Column('osm_id', BigInteger, primary_key=False)
-    solution                   = Column(String, primary_key=False)
+    solution                   = Column('message',String, primary_key=False)
     complete                   = Column(Boolean, nullable=False)
     valid                      = Column(Boolean, nullable=False)
     in_osm                     = Column(Boolean, nullable=False)
+
+    def __init__(self, userId, create_date, error_id, schema, osmId, solution, complete, valid):
+        self.user_id = userId
+        self.create_date = create_date
+        self.error_id = error_id
+        self.schema = schema
+        self.osmId = osmId
+        self.solution = solution
+        self.complete = complete
+        self.in_osm = False
+        self.valid = valid
 
 

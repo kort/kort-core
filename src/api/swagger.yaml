@@ -61,13 +61,14 @@ paths:
             type: array
             items:
               $ref: '#/definitions/Mission'
-  /missions/{mission_id}/solution:
+  /missions/{schema_id}/{error_id}/solution:
     put:
       tags: [Mission]
-      operationId: api.missions.put_mission
+      operationId: api.missions.put_mission_solution
       summary: mission description
       parameters:
-        - $ref: '#/parameters/mission_id'
+        - $ref: '#/parameters/schema_id'
+        - $ref: '#/parameters/error_id'
         - name: solution
           in: body
           schema:
@@ -133,13 +134,19 @@ parameters:
     type: string
     required: true
     pattern: "^[0-9]+$"
-  mission_id:
-    name: mission_id
-    description: unique mission id
+  schema_id:
+    name: schema_id
+    description: schema id
     in: path
     type: string
     required: true
-    pattern: "^[a-zA-Z0-9-]+$"
+    pattern: "^[0-9]+$"
+  error_id:
+    name: error_id
+    description: error id
+    in: path
+    type: integer
+    required: true
 
 definitions:
   User:
@@ -226,7 +233,7 @@ definitions:
         example: 12
         readOnly: true
       osmId:
-        type: integer
+        type: number
         description: "The unique OSM id"
       osmType:
         type: string
@@ -308,7 +315,7 @@ definitions:
       solved:
         type: boolean
         description: whether the mission was solved or not
-      user_id:
+      userId:
         type: integer
         description: unique user id
       osm_id:
