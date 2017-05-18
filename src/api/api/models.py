@@ -169,7 +169,7 @@ class Badge(Base):
         d['achievementTitle'] = locale.translate(lang, d.pop('title'))
         d['achieved'] = achieved
         d['achievementId'] = d.pop('id')
-        d['achievementImageURI'] = ''
+        d['achievementImageURI'] = d.pop('name')
         d['achievementDescription'] = locale.translate(lang, d.pop('description'))
         return d
 

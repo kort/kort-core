@@ -50,8 +50,10 @@ def put_mission_solution(schema_id, error_id, lang, solution):
                 .update({api.models.User.koin_count: api.models.User.koin_count + koins})
             db_session.commit()
 
-            # get new badges for this user
+            # update missions today
             #TODO
+
+            # get new badges for this user
             return create_new_achievements(user_id=user_id, solution=solution, lang=lang)
         else:
             return NoContent, 404
@@ -86,14 +88,14 @@ def create_new_achievements(user_id, solution, lang):
         print(row.title)
 
     #insert badges
-    badgesAchived = []
+    badgesAchieved = []
     for badge in new_badges:
         db_session.add(
             api.models.UserBadge(user_id=user_id, badge_id=badge.id, create_date=datetime.datetime.utcnow())
         )
-        badgesAchived.append(badge.dump(lang, True, datetime.datetime.utcnow()))
+        badgesAchieved.append(badge.dump(lang, True, datetime.datetime.utcnow()))
 
     db_session.commit()
 
-    return badgesAchived
+    return badgesAchieved
 
