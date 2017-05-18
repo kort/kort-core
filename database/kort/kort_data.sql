@@ -14,11 +14,7 @@ insert into kort.badge (badge_id, name, title, description, color, sorting, comp
 insert into kort.badge (badge_id, name, title, description, color, sorting, compare_value) VALUES (4, 'fix_count_100', 'badge.name.100_missions', 'badge.description.100_missions_completed', '#FFFBCB', 210, 100);
 insert into kort.badge (badge_id, name, title, description, color, sorting, compare_value) VALUES (5, 'fix_count_50', 'badge.name.50_missions', 'badge.description.50_missions_completed', '#d9d9d9', 220, 50);
 insert into kort.badge (badge_id, name, title, description, color, sorting, compare_value) VALUES (6, 'fix_count_10', 'badge.name.10_missions', 'badge.description.10_missions_completed', '#d8c69a', 230, 10);
-insert into kort.badge (badge_id, name, title, description, color, sorting, compare_value) VALUES (7, 'vote_count_1000', 'badge.name.1000_checks', 'badge.description.1000_checks', '#FFFBCB', 310, 1000);
-insert into kort.badge (badge_id, name, title, description, color, sorting, compare_value) VALUES (8, 'vote_count_100', 'badge.name.100_checks', 'badge.description.100_checks', '#d9d9d9', 320, 100);
-insert into kort.badge (badge_id, name, title, description, color, sorting, compare_value) VALUES (9, 'vote_count_10', 'badge.name.10_checks', 'badge.description.10_checks', '#d8c69a', 330, 10);
-insert into kort.badge (badge_id, name, title, description, color, sorting, compare_value) VALUES (10, 'fix_count_1', 'badge.name.first_mission', 'badge.description.1st_mission', '#CFFFD2', 410, 1);
-insert into kort.badge (badge_id, name, title, description, color, sorting, compare_value) VALUES (11, 'vote_count_1', 'badge.name.first_check', 'badge.description.1st_check', '#CFFFD2', 420, 1);
+insert into kort.badge (badge_id, name, title, description, color, sorting, compare_value) VALUES (7, 'fix_count_1', 'badge.name.first_mission', 'badge.description.1st_mission', '#CFFFD2', 410, 1);
 
 -- Insert missing_track_types
 insert into kort.answer (answer_id, type, value, title, sorting) VALUES (1, 'missing_track_type', 'grade1', 'answer.track_type.grade1', 110);
