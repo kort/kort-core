@@ -124,7 +124,11 @@ paths:
       operationId: api.achievements.get_achievements
       summary: returns the achievements
       parameters:
-        - $ref: '#/parameters/user_id'
+        - name: user_id
+          description: unique user id
+          type: string
+          in: query
+          default: -1
         - name: lang
           in: query
           type: string
