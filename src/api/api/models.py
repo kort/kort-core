@@ -87,8 +87,10 @@ class kort_errors(Base):
     txt4                   = Column(String, primary_key=False)
     txt5                   = Column(String, primary_key=False)
 
-    def dump(self, lang):
+    def dump(self, language):
         d = dict([(k, v) for k, v in vars(self).items() if not k.startswith('_') and not k == 'geom'])
+        locale = I18n.I18n()
+        lang = locale.matchLanguage(language)
         print(d)
         d['id'] = 's'+d['schema']+'id'+str(d['errorId'])
         print('ok')
@@ -96,7 +98,7 @@ class kort_errors(Base):
         d['geomType'] = 'point' if d['osmType'] == 'node' else 'line'
         d['koinReward'] = d.pop('fix_koin_count')
 
-        locale = I18n.I18n()
+
         d['question'] = locale.translateQuestion(lang, d['question'], d.pop('txt1'), d.pop('txt2'), d.pop('txt3'), d.pop('txt4'), d.pop('txt5'))
         d['title'] = locale.translate(lang, d['title'])
 
@@ -146,4 +148,39 @@ class Solution(Base):
         self.in_osm = False
         self.valid = valid
 
+class Badge(Base):
+
+    __table_args__ = {'schema': 'kort'}
+    __tablename__ = 'badge'
+
+    id                         = Column('badge_id', Integer, primary_key=True)
+    name                       = Column (String, primary_key=False)
+    title                      = Column (String, primary_key=False)
+    compare_value              = Column (Integer, primary_key=False)
+    description                = Column (String, primary_key=False)
+    sorting                    = Column (Integer, primary_key=False)
+
+    def dump(self, language, achieved, achievementDate):
+        d = dict([(k, v) for k, v in vars(self).items() if not k.startswith('_')])
+        locale = I18n.I18n()
+        lang = locale.matchLanguage(language)
+
+        d['achievementDate'] = achievementDate
+        d['achievementTitle'] = locale.translate(lang, d.pop('title'))
+        d['achieved'] = achieved
+        d['achievementId'] = d.pop('id')
+        d['achievementImageURI'] = ''
+        d['achievementDescription'] = locale.translate(lang, d.pop('description'))
+        return d
+
+
+
+class UserBadge(Base):
+
+    __table_args__ = {'schema': 'kort'}
+    __tablename__ = 'user_badge'
+
+    user_id                    = Column('user_id', Integer, primary_key=True)
+    badge_id                   = Column('badge_id', Integer, primary_key=True)
+    create_date                = Column(DateTime, nullable=False)
 

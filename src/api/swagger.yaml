@@ -19,7 +19,7 @@ paths:
         - $ref: '#/parameters/user_id'
         - name: Authorization
           in: header
-          description: the user secret given after succesful OAuth Login
+          description: the user secret given after succesful OAuth login
           required: true
           type: string
       responses:
@@ -74,8 +74,13 @@ paths:
       parameters:
         - $ref: '#/parameters/schema_id'
         - $ref: '#/parameters/error_id'
+        - name: lang
+          in: query
+          type: string
+          default: 'en'
         - name: solution
           in: body
+          required: true
           schema:
             $ref: '#/definitions/Solution'
       responses:
