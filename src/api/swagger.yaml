@@ -17,6 +17,7 @@ paths:
       summary: Get a single user
       parameters:
         - $ref: '#/parameters/user_id'
+          required: true
         - name: Authorization
           in: header
           description: the user secret given after succesful OAuth login
@@ -123,6 +124,7 @@ paths:
       operationId: api.achievements.get_achievements
       summary: returns the achievements
       parameters:
+        - $ref: '#/parameters/user_id'
         - name: lang
           in: query
           type: string
@@ -142,7 +144,6 @@ parameters:
     description: unique user id
     in: path
     type: string
-    required: true
     pattern: "^[0-9]+$"
   schema_id:
     name: schema_id
