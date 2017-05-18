@@ -1,12 +1,16 @@
 from connexion import NoContent
 from geoalchemy2 import Geometry
+from sqlalchemy import extract
 from sqlalchemy import func, Table, engine, update
+from sqlalchemy import Date, cast
+
 import json
 import traceback
 
 import api.models
 from src.api.i18n import I18n
 import datetime
+from datetime import date
 
 db_session = api.models.init_db()
 
@@ -38,20 +42,29 @@ def put_mission_solution(schema_id, error_id, lang, solution):
         koins = solution['koins']
 
         if q.count() == 1:
+            # write solution to db
             solution = api.models.Solution(userId=user_id, create_date=datetime.datetime.utcnow(),
                                            error_id=error_id,
                                            schema=schema_id, osmId=solution['osm_id'],
                                            solution=solution['value'], complete=solution['solved'],
                                            valid=True)
             db_session.add(solution)
-            # db_session.commit()
-
-            db_session.query(api.models.User).filter_by(id=user_id)\
-                .update({api.models.User.koin_count: api.models.User.koin_count + koins})
             db_session.commit()
 
-            # update missions today
-            #TODO
+
+            # update koin count, mission count, missions today
+            no_missions_today = db_session.query(api.models.Solution).\
+                filter(api.models.Solution.user_id == user_id).\
+                filter(cast(api.models.Solution.create_date,Date) == date.today()).\
+                count()
+
+
+            db_session.query(api.models.User).filter_by(id=user_id)\
+                .update({api.models.User.koin_count: api.models.User.koin_count + koins,
+                         api.models.User.mission_count: api.models.User.mission_count + 1,
+                         api.models.User.mission_count_today: no_missions_today})
+            db_session.commit()
+
 
             # get new badges for this user
             return create_new_achievements(user_id=user_id, solution=solution, lang=lang)
