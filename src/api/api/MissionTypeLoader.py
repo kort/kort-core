@@ -31,24 +31,22 @@ class MissionTypeLoader:
     def __getattr__(self, name):
         return getattr(self.instance, name)
 
-
-
-    constraints = {
-
-        'motorway_ref':
-            {
-                'description': '',
-                're': '',
-                'lowerBound': '',
-                'upperBound': ''
-            },
-        'poi_name':
-            {
+    defaultRE = {
                 'description': '',
                 're': '',
                 'lowerBound': '',
                 'upperBound': ''
             }
+
+    constraints = {
+        'way_wo_tags': defaultRE,
+        'motorway_ref': defaultRE,
+        'religion': defaultRE,
+        'poi_name': defaultRE,
+        'missing_maxspeed': defaultRE,
+        'language_unknown': defaultRE,
+        'missing_track_type': defaultRE,
+        'missing_cuisine': defaultRE
     }
 
 
@@ -61,8 +59,6 @@ class MissionTypeLoader:
         'language_unknown':    'mission_language',
         'missing_track_type':    'mission_road',
         'missing_cuisine':   'mission_cuisine',
-        'religion2':   'mission_floors',
-        'religion3':   'mission_opening_hours'
     }
 
 
