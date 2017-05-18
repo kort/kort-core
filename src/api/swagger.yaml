@@ -17,6 +17,11 @@ paths:
       summary: Get a single user
       parameters:
         - $ref: '#/parameters/user_id'
+        - name: Authorization
+          in: header
+          description: the user secret given after succesful OAuth Login
+          required: true
+          type: string
       responses:
         200:
           description: Return User
