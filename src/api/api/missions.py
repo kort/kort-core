@@ -29,7 +29,7 @@ def get_missions(lat, lon, radius, limit, lang):
         print(traceback.format_exc())
     return [p.dump(lang) for p in q][:limit]
 
-def put_mission_solution(schema_id, error_id, lang, solution):
+def put_mission_solution(schema_id, error_id, lang, body):
 
     try:
         q = db_session.query(api.models.kort_errors).filter(api.models.kort_errors.errorId == error_id).filter(
@@ -37,18 +37,19 @@ def put_mission_solution(schema_id, error_id, lang, solution):
 
         # 403 if user does not exist
         # TODO check if valid according to re,
+        s = body['solution']
 
-        user_id = solution['userId']
-        koins = solution['koins']
+        user_id = s['userId']
+        koins = s['koins']
 
         if q.count() == 1:
             # write solution to db
-            solution = api.models.Solution(userId=user_id, create_date=datetime.datetime.utcnow(),
+            new_solution = api.models.Solution(userId=user_id, create_date=datetime.datetime.utcnow(),
                                            error_id=error_id,
-                                           schema=schema_id, osmId=solution['osm_id'],
-                                           solution=solution['value'], complete=solution['solved'],
+                                           schema=schema_id, osmId=s['osm_id'],
+                                           solution=s['value'], complete=s['solved'],
                                            valid=True)
-            db_session.add(solution)
+            db_session.add(new_solution)
             db_session.commit()
 
 
@@ -67,7 +68,7 @@ def put_mission_solution(schema_id, error_id, lang, solution):
 
 
             # get new badges for this user
-            return create_new_achievements(user_id=user_id, solution=solution, lang=lang)
+            return create_new_achievements(user_id=user_id, solution=s, lang=lang)
         else:
             return NoContent, 404
 

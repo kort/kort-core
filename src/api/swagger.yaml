@@ -68,7 +68,7 @@ paths:
             items:
               $ref: '#/definitions/Mission'
   /missions/{schema_id}/{error_id}/solution:
-    put:
+    post:
       tags: [Mission]
       operationId: api.missions.put_mission_solution
       summary: mission description
@@ -79,11 +79,11 @@ paths:
           in: query
           type: string
           default: 'en'
-        - name: solution
+        - name: body
           in: body
           required: true
           schema:
-            $ref: '#/definitions/Solution'
+            $ref: '#/definitions/missionSolution'
       responses:
         200:
           description: submit a mission solution
@@ -317,6 +317,13 @@ definitions:
               re:
                 type: string
                 description: the regular expression in place
+
+
+  missionSolution:
+    type: object
+    properties:
+      solution:
+        $ref: '#/definitions/Solution'
 
   Solution:
     type: object
