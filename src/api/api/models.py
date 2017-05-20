@@ -1,4 +1,6 @@
 from sqlalchemy import Column, DateTime, String, Integer, BigInteger, Boolean, create_engine, UniqueConstraint, Numeric
+from sqlalchemy import ForeignKey
+from sqlalchemy import PrimaryKeyConstraint
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import scoped_session, sessionmaker
 from geoalchemy2 import Geometry
@@ -165,7 +167,7 @@ class Badge(Base):
         locale = I18n.I18n()
         lang = locale.matchLanguage(language)
 
-        d['achievementDate'] = achievementDate
+        d['achievementDate'] = achievementDate.strftime("%d/%m/%y") if achievementDate else None
         d['achievementTitle'] = locale.translate(lang, d.pop('title'))
         d['achieved'] = achieved
         d['achievementId'] = d.pop('id')
@@ -180,7 +182,9 @@ class UserBadge(Base):
     __table_args__ = {'schema': 'kort'}
     __tablename__ = 'user_badge'
 
-    user_id                    = Column('user_id', Integer, primary_key=True)
-    badge_id                   = Column('badge_id', Integer, primary_key=True)
+    user_id                    = Column('user_id', Integer, ForeignKey('kort.user.user_id'), primary_key=True, nullable=False)
+    badge_id                   = Column('badge_id', Integer, ForeignKey('kort.badge.badge_id'), primary_key=True, nullable=False)
     create_date                = Column(DateTime, nullable=False)
+    PrimaryKeyConstraint('user_id', 'badge_id', name='user_id_badge_id_pk')
+
 
