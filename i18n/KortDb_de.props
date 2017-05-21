@@ -7,6 +7,7 @@ error_type.title.worship_religion=Kultstätte/Kirche ohne Religion
 error_type.title.language_name=Sprache des Namens unbekannt
 error_type.title.street_wo_name=Strasse ohne Namen
 error_type.title.missing_cuisine=Art des Restaurants
+error_type.title.opening_hours=Fehelnde Öffnungszeiten
 
 # error type placeholders
 error_type.placeholder.ref=Bezeichner
@@ -27,6 +28,8 @@ vote.question.language_unknown=Ist der Name '$2' in folgender Sprache?
 vote.question.tracktype=Ist der Weg folgendermassen beschaffen?
 vote.question.street_name=Ist dieser Strassenname korrekt?
 vote.question.missing_cuisine=Ist dies die korrekte Angabe der Küche von $1?
+vote.question.opening_hours=Was sind die Öffnungszeiten?
+
 
 # badge names
 badge.name.first_place=1. Rang

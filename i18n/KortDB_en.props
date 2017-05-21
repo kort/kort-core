@@ -7,6 +7,8 @@ error_type.title.worship_religion=Place of worship without religion
 error_type.title.language_name=Language of the name unknown
 error_type.title.street_wo_name=Street without a name
 error_type.title.missing_cuisine=Restaurant without a cuisine
+error_type.title.opening_hours=Place without opening hours
+
 
 # error type placeholders
 error_type.placeholder.ref=Reference
@@ -27,6 +29,8 @@ vote.question.language_unknown=Is the name '$2' in the following language?
 vote.question.tracktype=Is this path of the following kind?
 vote.question.street_name=Is this the correct name of the street?
 vote.question.missing_cuisine=Is this the correct cuisine type of $1?
+vote.question.opening_hours=What are the opening hours of this place?
+
 
 # badge names
 badge.name.first_place=1st place
