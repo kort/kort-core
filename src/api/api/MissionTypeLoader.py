@@ -46,7 +46,9 @@ class MissionTypeLoader:
         'missing_maxspeed': defaultRE,
         'language_unknown': defaultRE,
         'missing_track_type': defaultRE,
-        'missing_cuisine': defaultRE
+        'missing_cuisine': defaultRE,
+        'opening_hours': defaultRE
+
     }
 
 
@@ -59,6 +61,7 @@ class MissionTypeLoader:
         'language_unknown':    'mission_language',
         'missing_track_type':    'mission_road',
         'missing_cuisine':   'mission_cuisine',
+        'opening_hours':    'mission_opening_hours'
     }
 
 
