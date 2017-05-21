@@ -25,9 +25,4 @@ def get_achievements(user_id, lang):
 
     except Exception as e:
         print(traceback.format_exc())
-
-    print('get achievements for language '+lang)
-    with open('data/achievements.json') as json_data:
-        d = json.load(json_data)
-        return d
-    return '{}'
+        return '{}'
