@@ -163,7 +163,7 @@
     "type": "mission_opening_hours",
     "title": "Missing Opening Hours",
     "inputType" : {
-        "name": "select",
+        "name": "",
         "options": [],
         "constraints": {
             "description": "",
