@@ -76,34 +76,35 @@ def put_mission_solution(schema_id, error_id, lang, body):
 
     except Exception as e:
         print(traceback.format_exc())
+        return '{}'
 
-    with open('data/achievements.json') as json_data:
-        d = json.load(json_data)
-        return d
 
 def create_new_achievements(user_id, solution, lang):
-
     # no of missions
     q = db_session.query(api.models.Solution).filter(api.models.Solution.user_id == user_id)
     no_of_missions = q.count();
     print('no of missions', no_of_missions)
 
+    # no of mission for this type of mission
+    # TODO
+
+    # no of missions within geometry
+    # TODO
 
     # get user badges
     user_badge_ids = db_session.query(api.models.UserBadge.badge_id).filter(api.models.UserBadge.user_id == user_id)
 
-    # get badges for this type which have not been achieved
-    new_badges = db_session.query(api.models.Badge).\
-        filter(api.models.Badge.name.like('fix_count_%')).\
-        filter(api.models.Badge.compare_value <= no_of_missions).\
-        filter(~api.models.Badge.id.in_(user_badge_ids))
+    # get badges for different types which have not been achieved
+    all_new_badges = []
+    all_new_badges.extend(
+        get_not_achieved_badges_no_of_missions(user_badge_ids=user_badge_ids, no_of_missions=no_of_missions))
 
-    for row in new_badges:
+    for row in all_new_badges:
         print(row.title)
 
-    #insert badges
+    # insert badges
     badgesAchieved = []
-    for badge in new_badges:
+    for badge in all_new_badges:
         db_session.add(
             api.models.UserBadge(user_id=user_id, badge_id=badge.id, create_date=datetime.datetime.utcnow())
         )
@@ -113,3 +114,15 @@ def create_new_achievements(user_id, solution, lang):
 
     return badgesAchieved
 
+
+def get_not_achieved_badges_no_of_missions(user_badge_ids, no_of_missions):
+    new_badges = db_session.query(api.models.Badge).\
+        filter(api.models.Badge.name.like('fix_count_%')).\
+        filter(api.models.Badge.compare_value <= no_of_missions).\
+        filter(~api.models.Badge.id.in_(user_badge_ids)).all()
+    return new_badges
+
+
+def get_not_achieved_badges_type_of_mission(user_badge_ids, no_of_mission_type, type):
+    # TODO
+    pass
