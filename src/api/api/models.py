@@ -80,6 +80,11 @@ class kort_errors(Base):
     view_type               = Column(String, primary_key=False)
     answer_placeholder      = Column(String, primary_key=False)
     fix_koin_count          = Column(Integer, primary_key=False)
+    image                   = Column(String, primary_key=False)
+    constraint_re_description = Column(String, primary_key=False)
+    constraint_re           = Column(String, primary_key=False, nullable=True)
+    constraint_lower_bound  = Column(Integer, primary_key=False, nullable=True)
+    constraint_upper_bound  = Column(Integer, primary_key=False, nullable=True)
     geom                    = Column(Geometry, nullable=False)
     latitude                = Column(Numeric, primary_key=False)
     longitude               = Column(Numeric, primary_key=False)
@@ -93,9 +98,7 @@ class kort_errors(Base):
         d = dict([(k, v) for k, v in vars(self).items() if not k.startswith('_') and not k == 'geom'])
         locale = I18n.I18n()
         lang = locale.matchLanguage(language)
-        print(d)
         d['id'] = 's'+d['schema']+'id'+str(d['errorId'])
-        print('ok')
         d['annotationCoordinate'] = [float(d.pop('latitude')), float(d.pop('longitude'))]
         d['geomType'] = 'point' if d['osmType'] == 'node' else 'line'
         d['koinReward'] = d.pop('fix_koin_count')
@@ -104,10 +107,10 @@ class kort_errors(Base):
         d['question'] = locale.translateQuestion(lang, d['question'], d.pop('txt1'), d.pop('txt2'), d.pop('txt3'), d.pop('txt4'), d.pop('txt5'))
         d['title'] = locale.translate(lang, d['title'])
 
-        metda = MissionTypeLoader()
-        d['inputType'] = metda.getInputType(lang, d['type'], d.pop('view_type'))
-        d['image'] = metda.getImage(d['type'])
-
+        input_type = MissionTypeLoader()
+        d['inputType'] = input_type.getInputType(lang=lang, type_id=d['type'], input_type_name= d.pop('view_type'),
+                 re_description=d.pop('constraint_re_description'), re=d.pop('constraint_re'),
+                 lower_bound=d.pop('constraint_lower_bound'), upper_bound=d.pop('constraint_upper_bound'))
         return d
 
 

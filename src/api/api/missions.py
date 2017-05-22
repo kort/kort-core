@@ -20,10 +20,13 @@ def get_missions(lat, lon, radius, limit, lang):
     #     d = json.load(json_data)
     #     return d
     try:
-        q = db_session.query(api.models.kort_errors)\
+        q = db_session.query(api.models.kort_errors) \
         .order_by(api.models.kort_errors.geom.distance_box('POINT(' + str(lon) + ' ' + str(lat) + ')')) \
         .limit(limit)
-        # .filter(api.models.kort_errors.geom.ST_Distance_Sphere('POINT(' + str(lon) + ' ' + str(lat) + ')') < radius) \
+
+        # .filter(api.models.kort_errors.geom.ST_Distance_Sphere('POINT(' + str(lon) + ' ' + str(lat) + ')') < radius)\
+
+        print(q)
 
     except Exception as e:
         print(traceback.format_exc())

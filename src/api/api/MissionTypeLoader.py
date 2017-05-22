@@ -31,54 +31,20 @@ class MissionTypeLoader:
     def __getattr__(self, name):
         return getattr(self.instance, name)
 
-    defaultRE = {
-                'description': '',
-                're': '',
-                'lowerBound': '',
-                'upperBound': ''
-            }
-
-    constraints = {
-        'way_wo_tags': defaultRE,
-        'motorway_ref': defaultRE,
-        'religion': defaultRE,
-        'poi_name': defaultRE,
-        'missing_maxspeed': defaultRE,
-        'language_unknown': defaultRE,
-        'missing_track_type': defaultRE,
-        'missing_cuisine': defaultRE,
-        'opening_hours': defaultRE
-
-    }
-
-
-    image = {
-        'way_wo_tags':     'mission_road',
-        'motorway_ref':     'mission_road',
-        'religion':    'mission_religion',
-        'poi_name':    'mission_poi',
-        'missing_maxspeed':    'mission_speed',
-        'language_unknown':    'mission_language',
-        'missing_track_type':    'mission_road',
-        'missing_cuisine':   'mission_cuisine',
-        'opening_hours':    'mission_opening_hours'
-    }
-
-
-
-
-    def getInputType(self, lang, type_id,  name):
+    def getInputType(self, lang, type_id, input_type_name, re_description, re, lower_bound, upper_bound):
         try:
             locale = I18n.I18n()
-            inputType = {
-                'constraints': self.constraints.get(type_id, None),
+            input_type = {
+                'constraints': {
+                    'description': locale.translate(lang, re_description) or '',
+                    're': re or '',
+                    'lowerBound': lower_bound or '',
+                    'upperBound': upper_bound or ''
+                },
                 'options': locale.translateList(lang, self.options.get(type_id, [])),
                 'values': locale.translateList(lang, self.values.get(type_id, [])),
-                'name': locale.translate(lang, name)
+                'name': locale.translate(lang, input_type_name)
             }
         except Exception as e:
             print(traceback.format_exc())
-        return inputType;
-
-    def getImage(self, type_id):
-        return self.image.get(type_id, '')
+        return input_type;
