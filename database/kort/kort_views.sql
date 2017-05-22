@@ -28,6 +28,11 @@ select  e.error_id id,
         t.bug_question description,
         t.fix_koin_count,
         t.vote_koin_count,
+        t.image,
+        t.constraint_re_description,
+        t.constraint_re,
+        t.constraint_lower_bound,
+        t.constraint_upper_bound,
         e.latitude,
         e.longitude,
         e.geom,
@@ -223,7 +228,12 @@ select t.error_type_id,
        t.vote_question,
        t.vote_koin_count,
        t.fix_koin_count,
-       t.required_votes
+       t.required_votes,
+       t.image,
+       t.constraint_re_description,
+       t.constraint_re,
+       t.constraint_lower_bound,
+       t.constraint_upper_bound
 from   kort.error_type t;
 
 create or replace view kort.all_running_promotions as

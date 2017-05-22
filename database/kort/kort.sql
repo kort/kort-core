@@ -15,6 +15,11 @@ create table kort.error_type (
     vote_koin_count integer not null,
     fix_koin_count integer not null,
     required_votes integer not null,
+    image character varying(255),
+    constraint_re_description character varying(255),
+    constraint_re text,
+    constraint_lower_bound integer,
+    constraint_upper_bound integer,
     unique(type)
 );
 
