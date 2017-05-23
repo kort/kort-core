@@ -1,14 +1,13 @@
 from connexion import NoContent
-from geoalchemy2 import Geometry
-from sqlalchemy import extract
-from sqlalchemy import func, Table, engine, update
+from geoalchemy2 import WKTElement
 from sqlalchemy import Date, cast
 
 import json
 import traceback
 
 import api.models
-from src.api.i18n import I18n
+from sqlalchemy import func
+
 import datetime
 from datetime import date
 
@@ -20,13 +19,16 @@ def get_missions(lat, lon, radius, limit, lang):
     #     d = json.load(json_data)
     #     return d
     try:
-        q = db_session.query(api.models.kort_errors) \
-        .order_by(api.models.kort_errors.geom.distance_box('POINT(' + str(lon) + ' ' + str(lat) + ')')) \
-        .limit(limit)
+        location = WKTElement('POINT('+str(lon)+' '+str(lat)+')', srid=4326)
 
-        # .filter(api.models.kort_errors.geom.ST_Distance_Sphere('POINT(' + str(lon) + ' ' + str(lat) + ')') < radius)\
+        subquery = db_session.query(api.models.kort_errors) \
+        .order_by(api.models.kort_errors.geom.distance_centroid(location)) \
+        .limit(limit).subquery()
 
-        print(q)
+        q = db_session.query(subquery.c.id)\
+            .filter(func.ST_DistanceSphere(subquery.c.geom, location) < radius)
+
+        q = db_session.query(api.models.kort_errors).filter(api.models.kort_errors.errorId.in_(q))
 
     except Exception as e:
         print(traceback.format_exc())
