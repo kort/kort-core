@@ -94,6 +94,18 @@ paths:
             type: array
             items:
               $ref: '#/definitions/Achievement'
+  /missions/osm/{osm_type}/{osm_id}:
+    get:
+      tags: [Mission]
+      operationId: api.missions.get_osm_geom
+      summary: returns the geometry of the osm feature
+      parameters:
+        - $ref: '#/parameters/osm_type'
+        - $ref: '#/parameters/osm_id'
+      responses:
+        200:
+          description: returns list of coordinates
+
 
   /highscore:
     get:
@@ -162,6 +174,21 @@ parameters:
     in: path
     type: integer
     required: true
+  osm_type:
+    name: osm_type
+    description: the osm type (node, way, relation)
+    in: path
+    type: string
+    enum:
+      - node
+      - way
+      - relation
+  osm_id:
+    name: osm_id
+    description: the osm id
+    in: path
+    type: integer
+
 
 definitions:
   User:
@@ -341,7 +368,7 @@ definitions:
         type: integer
         description: unique user id
       osm_id:
-        type: number
+        type: integer
         description: the unique osm id
 
   Achievement:

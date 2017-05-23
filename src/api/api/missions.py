@@ -1,6 +1,7 @@
 from connexion import NoContent
 from geoalchemy2 import WKTElement
 from sqlalchemy import Date, cast
+import osmapi
 
 import json
 import traceback
@@ -131,3 +132,35 @@ def get_not_achieved_badges_no_of_missions(user_badge_ids, no_of_missions):
 def get_not_achieved_badges_type_of_mission(user_badge_ids, no_of_mission_type, type):
     # TODO
     pass
+
+def get_osm_geom(osm_type, osm_id):
+    osm_api = osmapi.OsmApi()
+    try:
+        if osm_type == 'way':
+            nodes = osm_api.WayFull(osm_id)
+            ordered_node_list = []
+            way_dict = {}
+            way_order = []
+            for item in nodes:
+                if item.get('type') == 'node':
+                    node = item.get('data')
+                    lat = node.get('lat')
+                    lon = node.get('lon')
+                    way_dict[node.get('id')] = [lat, lon]
+                elif item.get('type') == 'way':
+                    way = item.get('data')
+                    way_order = way.get('nd')
+            for node_id in way_order:
+                ordered_node_list.append(way_dict.get(node_id))
+            return ordered_node_list
+        elif osm_type == 'node':
+            node = osm_api.NodeGet(osm_id)
+            lat = node.get('lat')
+            lon = node.get('lon')
+            return [lat, lon]
+        elif osm_type == 'relation':
+            # not yet implemented
+            return []
+    except Exception as e:
+        print(traceback.format_exc())
+        return []
