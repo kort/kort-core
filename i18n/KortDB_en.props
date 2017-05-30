@@ -8,7 +8,7 @@ error_type.title.language_name=Language of the name unknown
 error_type.title.street_wo_name=Street without a name
 error_type.title.missing_cuisine=Restaurant without a cuisine
 error_type.title.opening_hours=Place without opening hours
-error_type.title.levels=Missing Levels
+error_type.title.level=Missing Levels
 
 
 # error type placeholders
