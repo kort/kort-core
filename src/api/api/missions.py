@@ -159,8 +159,29 @@ def get_osm_geom(osm_type, osm_id):
             lon = node.get('lon')
             return [lat, lon]
         elif osm_type == 'relation':
-            # not yet implemented
-            return []
+            nodes = osm_api.RelationFull(osm_id)
+            ordered_node_list = []
+            way_dict = {}
+            ways = {}
+            members = []
+            for item in nodes:
+                if item.get('type') == 'node':
+                    node = item.get('data')
+                    lat = node.get('lat')
+                    lon = node.get('lon')
+                    way_dict[node.get('id')] = [lat, lon]
+                elif item.get('type') == 'way':
+                    way = item.get('data')
+                    ways[way.get('id')] = way.get('nd')
+                elif item.get('type') == 'relation':
+                    relation = item.get('data')
+                    members = relation.get('member')
+            # choose only outer member since mapbox does not support multipolygons
+            for rel_member in members:
+                if rel_member.get('role') == 'outer': member = rel_member
+            for node_id in ways.get(member.get('ref')):
+                ordered_node_list.append(way_dict.get(node_id))
+            return ordered_node_list
     except Exception as e:
         print(traceback.format_exc())
         return []
