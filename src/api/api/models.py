@@ -136,6 +136,7 @@ class Solution(Base):
     create_date                = Column(DateTime, nullable=False)
     error_id                   = Column(Integer, primary_key=False)
     schema                     = Column(String, primary_key=False)
+    type                       = Column('error_type', String, primary_key=False)
     osmId                      = Column('osm_id', BigInteger, primary_key=False)
     solution                   = Column('message',String, primary_key=False)
     complete                   = Column(Boolean, nullable=False)
