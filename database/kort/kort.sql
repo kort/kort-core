@@ -28,6 +28,7 @@ create table kort.fix (
     user_id integer,
     create_date timestamp not null default now(),
     error_id bigint not null,
+    error_type character varying(20) not null,
     schema character varying(50) not null,
     osm_id bigint not null,
     message text,
