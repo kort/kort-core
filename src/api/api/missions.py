@@ -74,7 +74,7 @@ def put_mission_solution(schema_id, error_id, lang, body):
 
 
             # get new badges for this user
-            return create_new_achievements(user_id=user_id, solution=s, lang=lang)
+            return create_new_achievements(user_id=user_id, solution=s, lang=lang, error=q.first())
         else:
             return NoContent, 404
 
@@ -85,25 +85,42 @@ def put_mission_solution(schema_id, error_id, lang, body):
         return '{}'
 
 
-def create_new_achievements(user_id, solution, lang):
+def create_new_achievements(user_id, solution, lang, error):
+    all_new_badges = []
+    # get user badges
+    user_badge_ids = db_session.query(api.models.UserBadge.badge_id).filter(api.models.UserBadge.user_id == user_id)
+
+    # get no of missions in general
     # no of missions
     q = db_session.query(api.models.Solution).filter(api.models.Solution.user_id == user_id)
     no_of_missions = q.count();
     print('no of missions', no_of_missions)
 
-    # no of mission for this type of mission
-    # TODO
-
-    # no of missions within geometry
-    # TODO
-
-    # get user badges
-    user_badge_ids = db_session.query(api.models.UserBadge.badge_id).filter(api.models.UserBadge.user_id == user_id)
-
-    # get badges for different types which have not been achieved
-    all_new_badges = []
     all_new_badges.extend(
         get_not_achieved_badges_no_of_missions(user_badge_ids=user_badge_ids, no_of_missions=no_of_missions))
+
+
+    # no of mission for this type of mission
+    mission_type = error.type
+    q = db_session.query(api.models.Solution).filter(api.models.Solution.user_id == user_id).\
+        filter(api.models.Solution.type == mission_type)
+    no_of_missions_type = q.count()
+    all_new_badges.extend(
+        get_not_achieved_badges_type_of_mission(user_badge_ids=user_badge_ids, no_of_missions_type=no_of_missions_type,
+                                                type=mission_type))
+
+    # per day achievements
+    # TODO
+    # easy query no of missions additional filter per day
+
+    # region achievements
+    # TODO
+
+    # highscore achievements
+    # TODO
+
+
+
 
     for row in all_new_badges:
         print(row.title)
@@ -129,7 +146,14 @@ def get_not_achieved_badges_no_of_missions(user_badge_ids, no_of_missions):
     return new_badges
 
 
-def get_not_achieved_badges_type_of_mission(user_badge_ids, no_of_mission_type, type):
+def get_not_achieved_badges_type_of_mission(user_badge_ids, no_of_missions_type, type):
+    new_badges = db_session.query(api.models.Badge).\
+        filter(api.models.Badge.name.like('fix_count_'+type+'%')).\
+        filter(api.models.Badge.compare_value <= no_of_missions_type).\
+        filter(~api.models.Badge.id.in_(user_badge_ids)).all()
+    return new_badges
+
+def get_not_achieved_badges_highscore(user_badge_ids, no_of_mission_type, type):
     # TODO
     pass
 
