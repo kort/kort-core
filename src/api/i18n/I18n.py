@@ -56,9 +56,9 @@ class I18n:
         if not txt1 and '$1' not in translated_question:
             return translated_question
         else:
-            rep = {'$1' : self.translate_place(lang, txt1), '$2' : self.translate(lang, txt2),
-                   '$3' : self.translate(lang, txt3), '$4' : self.translate(lang, txt4),
-                   '$5' : self.translate(lang, txt5)}
+            rep = {'$1': self.translate_place(lang, txt1), '$2': self.translate(lang, txt2),
+                   '$3': self.translate(lang, txt3), '$4': self.translate(lang, txt4),
+                   '$5': self.translate(lang, txt5)}
             rep = dict((re.escape(k), v) for k, v in rep.items())
             pattern = re.compile("|".join(rep.keys()))
             return pattern.sub(lambda m: rep[re.escape(m.group(0))], translated_question)
