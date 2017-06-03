@@ -110,8 +110,13 @@ def create_new_achievements(user_id, solution, lang, error):
                                                 type=mission_type))
 
     # per day achievements
-    # TODO
-    # easy query no of missions additional filter per day
+    q = db_session.query(func.count('*')).filter(api.models.Solution.user_id == user_id).\
+        group_by(func.to_char(api.models.Solution.create_date, "DD.MM.YYYY"))
+    max_number_of_missions_per_day = max(q.all())[0]
+    if (max_number_of_missions_per_day == 5):
+        new_badge = db_session.query(api.models.Badge).\
+        filter(api.models.Badge.name.like('5_per_day')).all()
+        all_new_badges.extend(new_badge)
 
     # region achievements
     # TODO
