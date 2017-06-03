@@ -14,7 +14,7 @@ from datetime import date
 
 db_session = api.models.init_db()
 
-def get_missions(lat, lon, radius, limit, lang):
+def get_missions(lat, lon, radius, limit, lang, user_id = -1):
     # print('get missions for language '+lang)
     # with open('data/missions.json') as json_data:
     #     d = json.load(json_data)
@@ -22,14 +22,20 @@ def get_missions(lat, lon, radius, limit, lang):
     try:
         location = WKTElement('POINT('+str(lon)+' '+str(lat)+')', srid=4326)
 
+        already_solved = db_session.query(api.models.Solution.error_id). \
+            filter(api.models.Solution.user_id == user_id)
+
         subquery = db_session.query(api.models.kort_errors) \
+        .filter((~api.models.kort_errors.errorId.in_(already_solved))) \
         .order_by(api.models.kort_errors.geom.distance_centroid(location)) \
         .limit(limit).subquery()
 
         q = db_session.query(subquery.c.id)\
             .filter(func.ST_DistanceSphere(subquery.c.geom, location) < radius)
 
+
         q = db_session.query(api.models.kort_errors).filter(api.models.kort_errors.errorId.in_(q))
+
 
     except Exception as e:
         print(traceback.format_exc())
@@ -118,8 +124,6 @@ def create_new_achievements(user_id, solution, lang, error):
         filter(api.models.Badge.name.like('5_per_day')).all()
         all_new_badges.extend(new_badge)
 
-    # region achievements
-    # TODO
 
     # highscore achievements
     # TODO

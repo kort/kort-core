@@ -39,6 +39,11 @@ paths:
       operationId: api.missions.get_missions
       summary: returns all missions within the parameters given
       parameters:
+        - name: user_id
+          in: query
+          description: unique user id
+          type: string
+          required: false
         - name: lat
           in: query
           type: number
