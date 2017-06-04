@@ -29,6 +29,7 @@ create table kort.fix (
     create_date timestamp not null default now(),
     error_id bigint not null,
     error_type character varying(20) not null,
+    fix_koin_count integer not null,
     schema character varying(50) not null,
     osm_id bigint not null,
     message text,
@@ -43,9 +44,6 @@ create table kort.user (
     user_id integer primary key default nextval('kort.user_id'),
     name varchar(100) not null,
     username varchar(100),
-    koin_count integer not null default 0 check (koin_count >= 0),
-    mission_count integer,
-    mission_count_today integer,
     logged_in boolean,
     last_login timestamp not null DEFAULT now(),
     token text,
@@ -136,7 +134,6 @@ $$ language plpgsql;
 
 create or replace function reset_kort() returns boolean as $$
 begin
-    update kort.user set koin_count = 0;
     delete from kort.user_badge;
     delete from kort.vote;
     delete from kort.fix;
