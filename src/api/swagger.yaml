@@ -121,7 +121,12 @@ paths:
         - name: type
           in: query
           type: string
-          default: 'day'
+          enum:
+            - day
+            - week
+            - month
+            - all
+          default: all
         - name: limit
           in: query
           type: integer
@@ -133,7 +138,7 @@ paths:
           schema:
             type: array
             items:
-              $ref: '#/definitions/Mission'
+              $ref: '#/definitions/Highscore'
 
   /achievements:
     get:
@@ -398,3 +403,25 @@ definitions:
         type: string
         format: date-time
         description: the date on which the achievement has been achieved
+
+  Highscore:
+    type: object
+    properties:
+      id:
+        type: integer
+        description: id
+      rank:
+        type: integer
+        description: the rank for this user
+      user_id:
+        type: string
+        description: the id of this user
+      username:
+        type: string
+        description: the username
+      mission_count:
+        type: integer
+        description: how many missions this user has solved
+      koin_count:
+        type: integer
+        description: how many koins this user has earned

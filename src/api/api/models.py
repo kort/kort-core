@@ -192,3 +192,65 @@ class UserBadge(Base):
     PrimaryKeyConstraint('user_id', 'badge_id', name='user_id_badge_id_pk')
 
 
+class Highscore(Base):
+
+    __table_args__ = {'schema': 'kort'}
+    __tablename__ = 'highscore_all_time'
+
+    id                         = Column(Integer, primary_key=True, nullable=False)
+    rank                       = Column(Integer, primary_key=False, nullable=False)
+    user_id                    = Column(Integer, primary_key=True, nullable=False)
+    username                   = Column(String, nullable=False)
+    mission_count              = Column(Integer, nullable=False)
+    koin_count                 = Column(Integer, nullable=False)
+
+    def dump(self):
+        return dict([(k, v) for k, v in vars(self).items() if not k.startswith('_')])
+
+
+class HighscoreDay(Base):
+
+    __table_args__ = {'schema': 'kort'}
+    __tablename__ = 'highscore_day'
+
+    id                         = Column(Integer, primary_key=True, nullable=False)
+    rank                       = Column(Integer, primary_key=False, nullable=False)
+    user_id                    = Column(Integer, primary_key=True, nullable=False)
+    username                   = Column(String, nullable=False)
+    mission_count              = Column(Integer, nullable=False)
+    koin_count                 = Column(Integer, nullable=False)
+
+    def dump(self):
+        return dict([(k, v) for k, v in vars(self).items() if not k.startswith('_')])
+
+
+class HighscoreWeek(Base):
+
+    __table_args__ = {'schema': 'kort'}
+    __tablename__ = 'highscore_week'
+
+    id                         = Column(Integer, primary_key=True, nullable=False)
+    rank                       = Column(Integer, primary_key=False, nullable=False)
+    user_id                    = Column(Integer, primary_key=True, nullable=False)
+    username                   = Column(String, nullable=False)
+    mission_count              = Column(Integer, nullable=False)
+    koin_count                 = Column(Integer, nullable=False)
+
+    def dump(self):
+        return dict([(k, v) for k, v in vars(self).items() if not k.startswith('_')])
+
+
+class HighscoreMonth(Base):
+
+    __table_args__ = {'schema': 'kort'}
+    __tablename__ = 'highscore_month'
+
+    id                         = Column(Integer, primary_key=True, nullable=False)
+    rank                       = Column(Integer, primary_key=False, nullable=False)
+    user_id                    = Column(Integer, primary_key=True, nullable=False)
+    username                   = Column(String, nullable=False)
+    mission_count              = Column(Integer, nullable=False)
+    koin_count                 = Column(Integer, nullable=False)
+
+    def dump(self):
+        return dict([(k, v) for k, v in vars(self).items() if not k.startswith('_')])
