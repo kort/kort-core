@@ -380,7 +380,7 @@ definitions:
       osm_id:
         type: integer
         description: the unique osm id
-      errorType:
+      type:
         type: string
         description: type of error
 

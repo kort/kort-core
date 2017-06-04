@@ -53,7 +53,7 @@ def put_mission_solution(schema_id, error_id, lang, body):
 
         user_id = s['userId']
         koins = s['koins']
-        error_type = s['errorType']
+        error_type = s['type']
 
         if q.count() == 1:
             # write solution to db
