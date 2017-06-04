@@ -31,23 +31,17 @@ class User(Base):
 
     id                  = Column('user_id', Integer, primary_key=True)
     secret              = Column(String, nullable=False, unique=True)
-    koin_count          = Column(Integer, nullable=False)
     name                = Column(String, nullable=False)
     username            = Column(String, nullable=False)
     oauth_provider      = Column(String, nullable=False)
     oauth_user_id       = Column(String, nullable=False)
     pic_url             = Column(String, nullable=True)
     token               = Column(String, nullable=True)
-    mission_count       = Column(Integer, nullable=False)
-    mission_count_today = Column(Integer, nullable=False)
     logged_in           = Column(Boolean, nullable=False)
     last_login          = Column(DateTime, nullable=False)
     UniqueConstraint(oauth_provider, oauth_user_id, name='unique_oauth_user')
 
     def __init__(self, name, username, oauth_provider, oauth_user_id, pic_url, secret, token):
-        self.mission_count = 0
-        self.mission_count_today = 0
-        self.koin_count = 0
         self.name = name
         self.username = username
         self.oauth_provider = oauth_provider
@@ -58,8 +52,12 @@ class User(Base):
         self.logged_in = True
         self.last_login = datetime.datetime.utcnow()
 
-    def dump(self):
-        return dict([(k, v) for k, v in vars(self).items() if not k.startswith('_')])
+    def dump(self, mission_count=0, mission_count_today=0, koin_count=0):
+        d = dict([(k, v) for k, v in vars(self).items() if not k.startswith('_')])
+        d['mission_count'] = mission_count
+        d['mission_count_today'] = mission_count_today
+        d['koin_count'] = koin_count
+        return d
 
     def __str__(self):
         return str(self.dump())
@@ -135,21 +133,24 @@ class Solution(Base):
     user_id                    = Column(Integer, primary_key=False)
     create_date                = Column(DateTime, nullable=False)
     error_id                   = Column(Integer, primary_key=False)
+    koin_count                 = Column('fix_koin_count', Integer, primary_key=False)
     schema                     = Column(String, primary_key=False)
-    type                       = Column('error_type', String, primary_key=False)
+    error_type                 = Column('error_type', String, primary_key=False)
     osmId                      = Column('osm_id', BigInteger, primary_key=False)
     solution                   = Column('message',String, primary_key=False)
     complete                   = Column(Boolean, nullable=False)
     valid                      = Column(Boolean, nullable=False)
     in_osm                     = Column(Boolean, nullable=False)
 
-    def __init__(self, userId, create_date, error_id, schema, osmId, solution, complete, valid):
+    def __init__(self, userId, create_date, error_id, error_type, schema, osmId, solution, koin_count, complete, valid):
         self.user_id = userId
         self.create_date = create_date
         self.error_id = error_id
+        self.error_type = error_type
         self.schema = schema
         self.osmId = osmId
         self.solution = solution
+        self.koin_count = koin_count
         self.complete = complete
         self.in_osm = False
         self.valid = valid

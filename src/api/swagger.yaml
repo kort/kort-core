@@ -380,6 +380,9 @@ definitions:
       osm_id:
         type: integer
         description: the unique osm id
+      errorType:
+        type: string
+        description: type of error
 
   Achievement:
     type: object

@@ -53,11 +53,13 @@ def put_mission_solution(schema_id, error_id, lang, body):
 
         user_id = s['userId']
         koins = s['koins']
+        error_type = s['errorType']
 
         if q.count() == 1:
             # write solution to db
             new_solution = api.models.Solution(userId=user_id, create_date=datetime.datetime.utcnow(),
-                                           error_id=error_id,
+                                           error_id=error_id, error_type=error_type,
+                                           koin_count=koins,
                                            schema=schema_id, osmId=s['osm_id'],
                                            solution=s['value'], complete=s['solved'],
                                            valid=True)
@@ -70,13 +72,6 @@ def put_mission_solution(schema_id, error_id, lang, body):
                 filter(api.models.Solution.user_id == user_id).\
                 filter(cast(api.models.Solution.create_date,Date) == date.today()).\
                 count()
-
-
-            db_session.query(api.models.User).filter_by(id=user_id)\
-                .update({api.models.User.koin_count: api.models.User.koin_count + koins,
-                         api.models.User.mission_count: api.models.User.mission_count + 1,
-                         api.models.User.mission_count_today: no_missions_today})
-            db_session.commit()
 
 
             # get new badges for this user
@@ -109,7 +104,7 @@ def create_new_achievements(user_id, solution, lang, error):
     # no of mission for this type of mission
     mission_type = error.type
     q = db_session.query(api.models.Solution).filter(api.models.Solution.user_id == user_id).\
-        filter(api.models.Solution.type == mission_type)
+        filter(api.models.Solution.error_type == mission_type)
     no_of_missions_type = q.count()
     all_new_badges.extend(
         get_not_achieved_badges_type_of_mission(user_badge_ids=user_badge_ids, no_of_missions_type=no_of_missions_type,
