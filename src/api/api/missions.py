@@ -14,11 +14,8 @@ from datetime import date
 
 db_session = api.models.init_db()
 
+
 def get_missions(lat, lon, radius, limit, lang, user_id = -1):
-    # print('get missions for language '+lang)
-    # with open('data/missions.json') as json_data:
-    #     d = json.load(json_data)
-    #     return d
     try:
         location = WKTElement('POINT('+str(lon)+' '+str(lat)+')', srid=4326)
 
@@ -26,20 +23,19 @@ def get_missions(lat, lon, radius, limit, lang, user_id = -1):
             filter(api.models.Solution.user_id == user_id)
 
         subquery = db_session.query(api.models.kort_errors) \
-        .filter((~api.models.kort_errors.errorId.in_(already_solved))) \
-        .order_by(api.models.kort_errors.geom.distance_centroid(location)) \
-        .limit(limit).subquery()
+            .filter((~api.models.kort_errors.errorId.in_(already_solved))) \
+            .order_by(api.models.kort_errors.geom.distance_centroid(location)) \
+            .limit(limit).subquery()
 
         q = db_session.query(subquery.c.id)\
             .filter(func.ST_DistanceSphere(subquery.c.geom, location) < radius)
 
-
         q = db_session.query(api.models.kort_errors).filter(api.models.kort_errors.errorId.in_(q))
-
 
     except Exception as e:
         print(traceback.format_exc())
     return [p.dump(lang) for p in q][:limit]
+
 
 def put_mission_solution(schema_id, error_id, lang, body):
 
@@ -59,22 +55,19 @@ def put_mission_solution(schema_id, error_id, lang, body):
             error_type = error.error_type
 
             # write solution to db
-            new_solution = api.models.Solution(userId=user_id, create_date=datetime.datetime.utcnow(),
-                                           error_id=error_id, error_type=error_type,
-                                           koin_count=koins,
-                                           schema=schema_id, osmId=s['osm_id'],
-                                           solution=s['value'], complete=s['solved'],
-                                           valid=True)
+            new_solution = api.models.Solution(
+                userId=user_id,
+                create_date=datetime.datetime.utcnow(),
+                error_id=error_id,
+                error_type=error_type,
+                koin_count=koins,
+                schema=schema_id,
+                osmId=s['osm_id'],
+                solution=s['value'],
+                complete=s['solved'],
+                valid=True)
             db_session.add(new_solution)
             db_session.commit()
-
-
-            # update koin count, mission count, missions today
-            no_missions_today = db_session.query(api.models.Solution).\
-                filter(api.models.Solution.user_id == user_id).\
-                filter(cast(api.models.Solution.create_date,Date) == date.today()).\
-                count()
-
 
             # get new badges for this user
             return create_new_achievements(user_id=user_id, solution=s, lang=lang, mission_type=error_type)
@@ -94,14 +87,10 @@ def create_new_achievements(user_id, solution, lang, mission_type):
     user_badge_ids = db_session.query(api.models.UserBadge.badge_id).filter(api.models.UserBadge.user_id == user_id)
 
     # get no of missions in general
-    # no of missions
     q = db_session.query(api.models.Solution).filter(api.models.Solution.user_id == user_id)
-    no_of_missions = q.count();
-    print('no of missions', no_of_missions)
-
+    no_of_missions = q.count()
     all_new_badges.extend(
         get_not_achieved_badges_no_of_missions(user_badge_ids=user_badge_ids, no_of_missions=no_of_missions))
-
 
     # no of mission for this type of mission
     q = db_session.query(api.models.Solution).filter(api.models.Solution.user_id == user_id).\
@@ -120,12 +109,11 @@ def create_new_achievements(user_id, solution, lang, mission_type):
         filter(api.models.Badge.name.like('5_per_day')).all()
         all_new_badges.extend(new_badge)
 
-
     # highscore achievements
-    # TODO
-
-
-
+    rank = db_session.query(api.models.Highscore).filter(api.models.Highscore.user_id == user_id).first().rank
+    if rank >= 1 and rank <= 3:
+        all_new_badges.extend(
+            get_not_achieved_badges_highscore(user_badge_ids=user_badge_ids, rank=rank))
 
     for row in all_new_badges:
         print(row.title)
@@ -158,9 +146,13 @@ def get_not_achieved_badges_type_of_mission(user_badge_ids, no_of_missions_type,
         filter(~api.models.Badge.id.in_(user_badge_ids)).all()
     return new_badges
 
-def get_not_achieved_badges_highscore(user_badge_ids, no_of_mission_type, type):
-    # TODO
-    pass
+
+def get_not_achieved_badges_highscore(user_badge_ids, rank):
+    new_badges = db_session.query(api.models.Badge). \
+        filter(api.models.Badge.name.like('highscore_place_' + str(rank))). \
+        filter(~api.models.Badge.id.in_(user_badge_ids)).all()
+    return new_badges
+
 
 def get_osm_geom(osm_type, osm_id):
     osm_api = osmapi.OsmApi()
