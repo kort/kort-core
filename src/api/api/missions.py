@@ -53,9 +53,11 @@ def put_mission_solution(schema_id, error_id, lang, body):
 
         user_id = s['userId']
         koins = s['koins']
-        error_type = s['type']
 
         if q.count() == 1:
+            error = q.first()
+            error_type = error.error_type
+
             # write solution to db
             new_solution = api.models.Solution(userId=user_id, create_date=datetime.datetime.utcnow(),
                                            error_id=error_id, error_type=error_type,
@@ -75,7 +77,7 @@ def put_mission_solution(schema_id, error_id, lang, body):
 
 
             # get new badges for this user
-            return create_new_achievements(user_id=user_id, solution=s, lang=lang, error=q.first())
+            return create_new_achievements(user_id=user_id, solution=s, lang=lang, mission_type=error_type)
         else:
             return NoContent, 404
 
@@ -86,7 +88,7 @@ def put_mission_solution(schema_id, error_id, lang, body):
         return '{}'
 
 
-def create_new_achievements(user_id, solution, lang, error):
+def create_new_achievements(user_id, solution, lang, mission_type):
     all_new_badges = []
     # get user badges
     user_badge_ids = db_session.query(api.models.UserBadge.badge_id).filter(api.models.UserBadge.user_id == user_id)
@@ -102,7 +104,6 @@ def create_new_achievements(user_id, solution, lang, error):
 
 
     # no of mission for this type of mission
-    mission_type = error.type
     q = db_session.query(api.models.Solution).filter(api.models.Solution.user_id == user_id).\
         filter(api.models.Solution.error_type == mission_type)
     no_of_missions_type = q.count()

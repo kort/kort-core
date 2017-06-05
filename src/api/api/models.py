@@ -70,7 +70,7 @@ class kort_errors(Base):
 
     errorId                  = Column('id', Integer, primary_key=True)
     schema                  = Column(String, primary_key=False)
-    type                    = Column(String, primary_key=False)
+    error_type              = Column('type', String, primary_key=False)
     osmId                   = Column('osm_id', BigInteger, primary_key=False)
     osmType                 = Column('osm_type', String, primary_key=False)
     question                 = Column('description', String, primary_key=False)
@@ -106,7 +106,7 @@ class kort_errors(Base):
         d['title'] = locale.translate(lang, d['title'])
 
         input_type = MissionTypeLoader()
-        d['inputType'] = input_type.getInputType(lang=lang, type_id=d['type'], input_type_name= d.pop('view_type'),
+        d['inputType'] = input_type.getInputType(lang=lang, type_id=d['error_type'], input_type_name= d.pop('view_type'),
                  re_description=d.pop('constraint_re_description'), re=d.pop('constraint_re'),
                  lower_bound=d.pop('constraint_lower_bound'), upper_bound=d.pop('constraint_upper_bound'))
         return d
