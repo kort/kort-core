@@ -2,6 +2,7 @@ import json
 import api.models
 import traceback
 
+from sqlalchemy import asc
 from sqlalchemy import desc
 
 
@@ -10,7 +11,7 @@ db_session = api.models.init_db()
 
 def get_achievements(user_id, lang):
     try:
-        all_badges = db_session.query(api.models.Badge).order_by(desc(api.models.Badge.sorting)).all()
+        all_badges = db_session.query(api.models.Badge).order_by(asc(api.models.Badge.sorting)).all()
 
         all_acquired_badges = db_session.query(api.models.UserBadge) \
             .filter(api.models.UserBadge.user_id == user_id)
