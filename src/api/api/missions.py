@@ -98,7 +98,7 @@ def create_new_achievements(user_id, solution, lang, mission_type):
     no_of_missions_type = q.count()
     all_new_badges.extend(
         get_not_achieved_badges_type_of_mission(user_badge_ids=user_badge_ids, no_of_missions_type=no_of_missions_type,
-                                                type=mission_type))
+                                                mission_type=mission_type))
 
     # per day achievements
     q = db_session.query(func.count('*')).filter(api.models.Solution.user_id == user_id).\
@@ -133,15 +133,15 @@ def create_new_achievements(user_id, solution, lang, mission_type):
 
 def get_not_achieved_badges_no_of_missions(user_badge_ids, no_of_missions):
     new_badges = db_session.query(api.models.Badge).\
-        filter(api.models.Badge.name.like('fix_count_%')).\
+        filter(api.models.Badge.name.like('total_fix_count_%')).\
         filter(api.models.Badge.compare_value <= no_of_missions).\
         filter(~api.models.Badge.id.in_(user_badge_ids)).all()
     return new_badges
 
 
-def get_not_achieved_badges_type_of_mission(user_badge_ids, no_of_missions_type, type):
+def get_not_achieved_badges_type_of_mission(user_badge_ids, no_of_missions_type, mission_type):
     new_badges = db_session.query(api.models.Badge).\
-        filter(api.models.Badge.name.like('fix_count_'+type+'%')).\
+        filter(api.models.Badge.name.like('fix_count_'+mission_type+'_%')).\
         filter(api.models.Badge.compare_value <= no_of_missions_type).\
         filter(~api.models.Badge.id.in_(user_badge_ids)).all()
     return new_badges
