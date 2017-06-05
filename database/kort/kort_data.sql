@@ -48,7 +48,7 @@ insert into kort.badge (badge_id, name, title, description, color, sorting, comp
 insert into kort.badge (badge_id, name, title, description, color, sorting, compare_value) VALUES (35, 'fix_count_opening_hours_100', 'badge.name.100_opening_hours_missions', 'badge.description.100_opening_hours_missions_completed', '#FFFBCB', 210, 100);
 insert into kort.badge (badge_id, name, title, description, color, sorting, compare_value) VALUES (36, 'fix_count_opening_hours_50', 'badge.name.50_opening_hours_missions', 'badge.description.50_opening_hours_missions_completed', '#d9d9d9', 220, 50);
 insert into kort.badge (badge_id, name, title, description, color, sorting, compare_value) VALUES (37, 'fix_count_opening_hours_5', 'badge.name.5_opening_hours_missions', 'badge.description.5_opening_hours_missions_completed', '#d8c69a', 230, 5);
-insert into kort.badge (badge_id, name, title, description, color, sorting, compare_value) VALUES (38, '5_per_day', 'badge.name.5_per_day', 'badge.description.5_per_day_completed', '#d8c69a', 230, 5);
+insert into kort.badge (badge_id, name, title, description, color, sorting, compare_value) VALUES (38, '6_per_day', 'badge.name.6_per_day', 'badge.description.6_per_day_completed', '#d8c69a', 230, 6);
 
 -- Insert missing_track_types
 insert into kort.answer (answer_id, type, value, title, sorting) VALUES (1, 'missing_track_type', 'grade1', 'answer.track_type.grade1', 110);
