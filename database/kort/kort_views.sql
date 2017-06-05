@@ -156,58 +156,6 @@ select a.answer_id id,
        a.sorting
 from   kort.answer a;
 
-CREATE or replace VIEW kort.highscore AS
-SELECT Rank()
-         over (
-           ORDER BY u.koin_count DESC)    AS ranking,
-	   ROW_NUMBER()
-		 over (
-		   ORDER BY u.koin_count DESC) AS rownumber,
-       u.user_id,
-       u.username,
-       u.pic_url,
-       u.oauth_user_id,
-       u.koin_count,
-       (SELECT Count(1) AS count
-        FROM   kort.fix f
-        WHERE  ( f.user_id = u.user_id )) AS fix_count,
-       (SELECT Count(1) AS count
-        FROM   kort.vote v
-        WHERE  ( v.user_id = u.user_id )) AS vote_count
-FROM   kort.user u
-WHERE  ( u.username IS NOT NULL )
-ORDER  BY Rank()
-            over (
-              ORDER BY u.koin_count DESC);
-
-CREATE or replace VIEW kort.user_model AS
-SELECT u.user_id                           AS id,
-       u.name,
-       u.username,
-       u.pic_url,
-       u.oauth_user_id,
-       u.oauth_provider,
-       u.token,
-       u.secret,
-       u.koin_count,
-       (SELECT Count(1) AS count
-        FROM   kort.fix f
-        WHERE  ( f.user_id = u.user_id ))  AS fix_count,
-       (SELECT Count(1) AS count
-        FROM   kort.vote v
-        WHERE  ( v.user_id = u.user_id ))  AS vote_count,
-       (SELECT hs.ranking
-        FROM   (SELECT highscore.ranking,
-                       highscore.user_id
-                FROM   kort.highscore) hs
-        WHERE  ( hs.user_id = u.user_id )) AS ranking,
-       (SELECT hs2.rownumber
-        FROM   (SELECT highscore.rownumber,
-                       highscore.user_id
-                FROM   kort.highscore) hs2
-        WHERE  ( hs2.user_id = u.user_id )) AS rownumber
-FROM   kort.user u;
-
 create or replace view kort.user_badges as
 select b.badge_id id,
        b.name,
@@ -297,7 +245,6 @@ select
 (select count(*) from kort.fix where not complete) incomplete_fix_count,
 (select count(*) from kort.fix where complete and valid) validated_fix_count,
 (select count(*) from kort.user where oauth_provider != '') user_count,
-(select count(*) from kort.user where koin_count > 0) active_user_count,
 (select count(*) from kort.user where oauth_provider = 'OpenStreetMap') osm_user_count,
 (select count(*) from kort.user where oauth_provider = 'Google') google_user_count,
 (select count(*) from kort.user where oauth_provider = 'Facebook') fb_user_count,
@@ -316,3 +263,108 @@ select
 (select count(*) from kort.user_badge where badge_id = 9) ten_checks_badge_count,
 (select count(*) from kort.user_badge where badge_id = 10) first_mission_badge_count,
 (select count(*) from kort.user_badge where badge_id = 11) first_check_badge_count;
+
+CREATE OR REPLACE VIEW kort.highscore_day AS
+SELECT
+  ROW_NUMBER() OVER(ORDER BY koin_count DESC) AS id,
+  RANK() OVER(ORDER BY koin_count DESC) AS rank,
+  user_id,
+  username,
+  fix_count AS mission_count,
+  koin_count
+FROM
+  (
+    SELECT
+      u.user_id,
+      u.username,
+      (SELECT SUM(fix_koin_count) AS count
+       FROM kort.fix f
+       WHERE (f.user_id = u.user_id AND f.create_date::DATE >= current_date)) AS koin_count,
+      (SELECT Count(1) AS count
+       FROM kort.fix f
+       WHERE (f.user_id = u.user_id AND f.create_date::DATE >= current_date)) AS fix_count
+    FROM kort.user u
+    WHERE (u.username IS NOT NULL)
+  ) AS score
+  WHERE koin_count IS NOT NULL
+  ORDER BY koin_count DESC
+;
+
+
+CREATE OR REPLACE VIEW kort.highscore_week AS
+SELECT
+  ROW_NUMBER() OVER(ORDER BY koin_count DESC) AS id,
+  RANK() OVER(ORDER BY koin_count DESC) AS rank,
+  user_id,
+  username,
+  fix_count AS mission_count,
+  koin_count
+FROM
+  (
+    SELECT
+      u.user_id,
+      u.username,
+      (SELECT SUM(fix_koin_count) AS count
+       FROM kort.fix f
+       WHERE (f.user_id = u.user_id AND f.create_date::DATE >= current_date-6)) AS koin_count,
+      (SELECT Count(1) AS count
+       FROM kort.fix f
+       WHERE (f.user_id = u.user_id AND f.create_date::DATE >= current_date-6)) AS fix_count
+    FROM kort.user u
+    WHERE (u.username IS NOT NULL)
+  ) AS score
+  WHERE koin_count IS NOT NULL
+  ORDER BY koin_count DESC
+;
+
+CREATE OR REPLACE VIEW kort.highscore_month AS
+SELECT
+  ROW_NUMBER() OVER(ORDER BY koin_count DESC) AS id,
+  RANK() OVER(ORDER BY koin_count DESC) AS rank,
+  user_id,
+  username,
+  fix_count AS mission_count,
+  koin_count
+FROM
+  (
+    SELECT
+      u.user_id,
+      u.username,
+      (SELECT SUM(fix_koin_count) AS count
+       FROM kort.fix f
+       WHERE (f.user_id = u.user_id AND f.create_date::DATE >= current_date-30)) AS koin_count,
+      (SELECT Count(1) AS count
+       FROM kort.fix f
+       WHERE (f.user_id = u.user_id AND f.create_date::DATE >= current_date-30)) AS fix_count
+    FROM kort.user u
+    WHERE (u.username IS NOT NULL)
+  ) AS score
+  WHERE koin_count IS NOT NULL
+  ORDER BY koin_count DESC
+;
+
+CREATE OR REPLACE VIEW kort.highscore_all_time AS
+SELECT
+  ROW_NUMBER() OVER(ORDER BY koin_count DESC) AS id,
+  RANK() OVER(ORDER BY koin_count DESC) AS rank,
+  user_id,
+  username,
+  fix_count AS mission_count,
+  koin_count
+FROM
+  (
+    SELECT
+      u.user_id,
+      u.username,
+      (SELECT SUM(fix_koin_count) AS count
+       FROM kort.fix f
+       WHERE f.user_id = u.user_id ) AS koin_count,
+      (SELECT Count(1) AS count
+       FROM kort.fix f
+       WHERE f.user_id = u.user_id ) AS fix_count
+    FROM kort.user u
+    WHERE (u.username IS NOT NULL)
+  ) AS score
+  WHERE koin_count IS NOT NULL
+  ORDER BY koin_count DESC
+;
