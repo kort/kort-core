@@ -25,12 +25,18 @@ def get_missions(lat, lon, radius, limit, lang, user_id = -1):
         subquery = db_session.query(api.models.kort_errors) \
             .filter((~api.models.kort_errors.errorId.in_(already_solved))) \
             .order_by(api.models.kort_errors.geom.distance_centroid(location)) \
-            .limit(limit).subquery()
+            .limit(1000).subquery()
 
         q = db_session.query(subquery.c.id)\
             .filter(func.ST_DistanceSphere(subquery.c.geom, location) < radius)
 
-        q = db_session.query(api.models.kort_errors).filter(api.models.kort_errors.errorId.in_(q))
+        q = db_session.query(api.models.kort_errors).filter(api.models.kort_errors.errorId.in_(q)).subquery()
+
+        q = db_session.query(api.models.kort_errors, func.row_number().over(
+                partition_by=api.models.kort_errors.error_type).label("row_number")) \
+            .select_entity_from(q).subquery()
+
+        q = db_session.query(api.models.kort_errors).select_entity_from(q).filter(q.c.row_number <= 10)
 
     except Exception as e:
         print(traceback.format_exc())
