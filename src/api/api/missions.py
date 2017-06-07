@@ -55,6 +55,9 @@ def put_mission_solution(schema_id, error_id, lang, body):
 
         user_id = s['userId']
         koins = s['koins']
+        answer = s['value']
+        if s['option']:
+            answer = s['option']
 
         if q.count() == 1:
             error = q.first()
@@ -69,7 +72,7 @@ def put_mission_solution(schema_id, error_id, lang, body):
                 koin_count=koins,
                 schema=schema_id,
                 osmId=s['osm_id'],
-                solution=s['value'],
+                solution=answer,
                 complete=s['solved'],
                 valid=True)
             db_session.add(new_solution)

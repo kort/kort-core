@@ -367,7 +367,10 @@ definitions:
     properties:
       value:
         type: string
-        description: id
+        description: the answer value
+      option:
+        type: string
+        description: the option value of the answer if any
       koins:
         type: integer
         description: number of koins earned
