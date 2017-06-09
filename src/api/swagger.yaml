@@ -214,7 +214,7 @@ definitions:
       - pic_url
       - secret
       - token
-      - logged_in
+      - loggedIn
       - last_login
     properties:
       id:
@@ -265,7 +265,7 @@ definitions:
         type: string
         description: token from oauth
         example: "kuqwelkjh"
-      logged_in:
+      loggedIn:
         type: boolean
         description: whether the user is logged in
         example: true

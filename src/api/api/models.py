@@ -37,7 +37,7 @@ class User(Base):
     oauth_user_id       = Column(String, nullable=False)
     pic_url             = Column(String, nullable=True)
     token               = Column(String, nullable=True)
-    logged_in           = Column(Boolean, nullable=False)
+    loggedIn           = Column('logged_in', Boolean, nullable=False)
     last_login          = Column(DateTime, nullable=False)
     UniqueConstraint(oauth_provider, oauth_user_id, name='unique_oauth_user')
 
@@ -49,7 +49,7 @@ class User(Base):
         self.pic_url = pic_url
         self.secret = secret
         self.token = token
-        self.logged_in = True
+        self.loggedIn = True
         self.last_login = datetime.datetime.utcnow()
 
     def dump(self, mission_count=0, mission_count_today=0, koin_count=0):
