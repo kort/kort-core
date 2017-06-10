@@ -1,7 +1,6 @@
 create sequence kort.fix_id;
 create sequence kort.vote_id;
 create sequence kort.user_id;
-create sequence kort.promotion_id;
 
 create table kort.error_type (
     error_type_id integer primary key,
@@ -91,24 +90,6 @@ create table kort.vote (
     unique(user_id, fix_id),
     foreign key (user_id) references kort.user (user_id),
     foreign key (fix_id) references kort.fix (fix_id)
-);
-
-create table kort.promotion (
-    id integer primary key default nextval('kort.promotion_id'),
-    title varchar(40) not null,
-    lang varchar(5) not null,
-    startdate timestamp with time zone not null,
-    enddate timestamp with time zone not null,
-    region varchar(100) not null,
-    geom public.geometry(MultiPolygon,4326) NULL
-);
-
-create table kort.promo2mission (
-    promo_id integer references kort.promotion(id) not null,
-    error_type varchar(20) references kort.error_type(type) not null,
-    mission_extra_coins integer not null,
-    validation_extra_coins integer not null,
-    primary key (promo_id, error_type)
 );
 
 create or replace function check_fix_onlyone_pending_per_error()

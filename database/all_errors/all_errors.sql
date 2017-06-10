@@ -8,7 +8,7 @@ create table all_errors.errors (
     description text,                          
     latitude integer not null,
     longitude integer not null,
-    geom public.geometry(Point,4326) not null,
+    geom geometry(Point,4326) not null,
     txt1 text,
     txt2 text,                   	
     txt3 text,

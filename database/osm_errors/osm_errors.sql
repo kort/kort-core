@@ -9,7 +9,7 @@ create table osm_errors.errors (
     object_id bigint not null,
     lat integer not null,
     lon integer not null,
-    geom public.geometry(Point,4326),
+    geom geometry(Point,4326),
     msgid text,
     txt1 text,
     txt2 text,

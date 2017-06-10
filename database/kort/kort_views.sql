@@ -184,56 +184,6 @@ select t.error_type_id,
        t.constraint_upper_bound
 from   kort.error_type t;
 
-create or replace view kort.all_running_promotions as
-select p.id AS promo_id,
-	   p.startdate,
-       p.enddate,
-       p.geom AS promogeom,
-       pm.error_type,
-       pm.mission_extra_coins,
-	   pm.validation_extra_coins
-FROM   (kort.promotion p
-        join kort.promo2mission pm
-          ON (( p.id = pm.promo_id )))
-WHERE  ( ( p.startdate <= Now() )
-         AND ( p.enddate >= Now() ) );
-
-create or replace view kort.all_missions_with_promotions AS
-SELECT er.error_id AS mission_error_id,
-       er.schema,
-       er.osm_id,
-       p.promo_id,
-       p.mission_extra_coins AS promo_extra_coins
-FROM   ((kort.all_errors e left join kort.error_types t on e.error_type_id = t.error_type_id) er
-        join kort.all_running_promotions p
-          ON (( ( er.type ) :: text = ( p.error_type ) :: text )))
-WHERE  public._st_contains(p.promogeom, er.geom);
-
-create or replace view kort.aggregateddata_from_all_missions as
-SELECT er.error_id AS mission_error_id,
- 	   er.schema,
-	   er.osm_id,
-	   er.fix_koin_count,
-       p.promo_id,
-	   p.promo_extra_coins
-FROM   (kort.all_errors e left join kort.error_types t on e.error_type_id = t.error_type_id) er
-        left join kort.all_missions_with_promotions p
-               ON (( er.error_id = p.mission_error_id) AND (er.schema = p.schema) AND (er.osm_id = p.osm_id));
-
-create or replace view kort.all_validations_with_promotions as
-SELECT v.id,
-	   p.promo_id,
-       p.validation_extra_coins AS promo_extra_coins
-FROM   kort.validations v left join kort.all_running_promotions p ON(v.type = p.error_type)
-WHERE public._st_contains(p.promogeom, v.geom);
-
-create or replace view kort.aggregateddata_from_all_validations as
-SELECT v.id,
-	   v.vote_koin_count,
-	   p.promo_id,
-       p.promo_extra_coins
-FROM   kort.validations v left join kort.all_validations_with_promotions p
-               ON (v.id = p.id);
 
 
 
