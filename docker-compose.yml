@@ -21,7 +21,7 @@ tokeninfo:
   volumes:
     - /usr/src/app/static
   env_file: .env
-  command: /usr/local/bin/python tokeninfo.py
+  command: /usr/local/bin/python3 tokeninfo.py
 
 nginx:
   restart: always
@@ -36,14 +36,14 @@ nginx:
     - api:web
 
 data:
-  image: postgres:latest
+  image: mdillon/postgis
   volumes:
     - /var/lib/postgresql
   command: "true"
 
 postgres:
   restart: always
-  image: postgres:latest
+  build: ./database/
   volumes_from:
     - data
   ports:
