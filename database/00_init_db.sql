@@ -1,0 +1,3 @@
+--CREATE USER postgres;
+
+CREATE EXTENSION IF NOT EXISTS postgis;
