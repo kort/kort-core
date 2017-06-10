@@ -214,7 +214,7 @@ definitions:
       - pic_url
       - secret
       - token
-      - loggedIn
+      - logged_in
       - last_login
     properties:
       id:
@@ -265,7 +265,7 @@ definitions:
         type: string
         description: token from oauth
         example: "kuqwelkjh"
-      loggedIn:
+      logged_in:
         type: boolean
         description: whether the user is logged in
         example: true
@@ -370,7 +370,7 @@ definitions:
         description: the answer value
       option:
         type: string
-        description: the option value of the answer if any
+        description: the option value if any
       koins:
         type: integer
         description: number of koins earned
