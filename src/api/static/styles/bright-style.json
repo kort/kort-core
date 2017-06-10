@@ -48,11 +48,11 @@
   "sources": {
     "openmaptiles": {
       "type": "vector",
-      "url": "https://free.tilehosting.com/data/v3.json?key=szSacfbAWQYx9igvVVgs" // the use of this key by other parties is forbidden
+      "url": "https://free.tilehosting.com/data/v3.json?key=szSacfbAWQYx9igvVVgs"
     }
   },
   "sprite": "https://openmaptiles.github.io/osm-bright-gl-style/sprite",
-  "glyphs": "https://free.tilehosting.com/fonts/{fontstack}/{range}.pbf?key=szSacfbAWQYx9igvVVgs", // the use of this key by other parties is forbidden
+  "glyphs": "https://free.tilehosting.com/fonts/{fontstack}/{range}.pbf?key=szSacfbAWQYx9igvVVgs",
   "layers": [
     {
       "id": "background",
