@@ -1,6 +1,9 @@
+#!/usr/bin/env python3
+
 from sqlalchemy import Column, DateTime, String, Integer, BigInteger, Boolean, create_engine, UniqueConstraint, Numeric
 from sqlalchemy import ForeignKey
 from sqlalchemy import PrimaryKeyConstraint
+from sqlalchemy import event
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import scoped_session, sessionmaker
 from geoalchemy2 import Geometry
@@ -9,7 +12,9 @@ from config.config import BaseConfig
 
 import datetime
 
-from src.api.i18n import I18n
+from sqlalchemy.sql.ddl import CreateSchema, DDL
+
+from i18n import I18n
 
 from .MissionTypeLoader import MissionTypeLoader
 
@@ -18,8 +23,10 @@ Base = declarative_base()
 
 def init_db():
     engine = create_engine(BaseConfig.SQLALCHEMY_DATABASE_URI, convert_unicode=True)
+
     db_session = scoped_session(sessionmaker(autocommit=False, autoflush=False, bind=engine))
     Base.query = db_session.query_property()
+    event.listen(Base.metadata, 'before_create', DDL("CREATE SCHEMA IF NOT EXISTS kort"))
     Base.metadata.create_all(bind=engine)
     return db_session
 

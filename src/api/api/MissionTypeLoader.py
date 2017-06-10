@@ -1,6 +1,6 @@
 import api.models
 
-from src.api.i18n import I18n
+from i18n import I18n
 import traceback
 
 class MissionTypeLoader:

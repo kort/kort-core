@@ -31,5 +31,4 @@ def shutdown_session(exception=None):
 
 
 if __name__ == '__main__':
-    # create_user('google', None)
     app.run()

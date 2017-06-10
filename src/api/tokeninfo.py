@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
 import connexion
+import sys
+sys.path.append("/src/")
 
 from tokeninfo import tokenAccess
 from config.config import BaseConfig
