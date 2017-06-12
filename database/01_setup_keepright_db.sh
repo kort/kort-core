@@ -77,46 +77,46 @@ psql -d $DB_NAME -f $DIR/keepright/keepright.sql
 echo "Transfer ownership of all objects to $DB_OWNER"
 for tbl in `psql -qAt -c "select schemaname || '.' || tablename from pg_tables where schemaname = '$DB_SCHEMA';" $DB_NAME` ; do  psql -c "alter table $tbl owner to $DB_OWNER" $DB_NAME ; done
 
-# # Load keepright data
-# if [ -z $MINIMAL_SETUP ] ; then
-#     if [ -z $PREVIOUS_DOWNLOAD ] ; then
-#         wget -O - http://keepright.ipax.at/keepright_errors.txt.bz2 | bzcat | grep -f $DIR/whitelist_errors.txt > /tmp/keepright_errors.txt
-#     else
-#         cp $PREVIOUS_DOWNLOAD /tmp/keepright_errors.txt
-#     fi
+# Load keepright data
+if [ -z $MINIMAL_SETUP ] ; then
+    if [ -z $PREVIOUS_DOWNLOAD ] ; then
+        wget -O - https://keepright.at/keepright_errors.txt.bz2 | bzcat | grep -f $DIR/whitelist_errors.txt > /tmp/keepright_errors.txt
+    else
+        cp $PREVIOUS_DOWNLOAD /tmp/keepright_errors.txt
+    fi
     
-#     echo "Splitting CSV in parts..."
-#     split -l 200000 /tmp/keepright_errors.txt /tmp/kr_part
-#     sed 1d /tmp/kr_partaa > /tmp/kr_partaa_wo && mv /tmp/kr_partaa_wo /tmp/kr_partaa
-#     rm /tmp/keepright_errors.txt
+    echo "Splitting CSV in parts..."
+    split -l 200000 /tmp/keepright_errors.txt /tmp/kr_part
+    sed 1d /tmp/kr_partaa > /tmp/kr_partaa_wo && mv /tmp/kr_partaa_wo /tmp/kr_partaa
+    rm /tmp/keepright_errors.txt
+
+    echo "Start loading data"
+    for part_file in /tmp/kr_part*
+    do
+        echo $part_file
+        #psql -d $DB_NAME -c "copy $DB_SCHEMA.errors from '$part_file' DELIMITER '	' null '\N' CSV;"
+        psql -d $DB_NAME -c "copy $DB_SCHEMA.errors from '/tmp/kr_partaa_co';" || echo "error in data file '$part_file'"
+    done
+    echo "End."
     
-#     echo "Start loading data"
-#     for part_file in /tmp/kr_part*
-#     do
-#         echo $part_file
-#         #psql -d $DB_NAME -c "copy $DB_SCHEMA.errors from '$part_file' DELIMITER '	' null '\N' CSV;"
-#         psql -d $DB_NAME -c "copy $DB_SCHEMA.errors from '$part_file';"
-#     done
-#     echo "End."
-    
-#     # echo "Combining part files to reduced keepright dump /tmp/keepright_errors.txt"
-#     # cat /tmp/kr_part* >> /tmp/keepright_errors.txt
-    
-#     echo "Delete all part files"
-#     rm /tmp/kr_part*
-    
-#     # echo "Creating indexes"
-#     # psql -d $DB_NAME -f $DIR/keepright/keepright_index.sql
-    
-#     if [[ $CLEANUP ]] ; then
-#         echo "Cleanup data"
-#         psql -d $DB_NAME -f $DIR/keepright/keepright_cleanup.sql
-#     else
-#         echo "Omitting cleanup"
-#     fi
-# else
-#     echo "Use minimal setup, do not load data."
-# fi
+    # echo "Combining part files to reduced keepright dump /tmp/keepright_errors.txt"
+    # cat /tmp/kr_part* >> /tmp/keepright_errors.txt
+
+    echo "Delete all part files"
+    rm /tmp/kr_part*
+
+    # echo "Creating indexes"
+    # psql -d $DB_NAME -f $DIR/keepright/keepright_index.sql
+
+    if [[ $CLEANUP ]] ; then
+        echo "Cleanup data"
+        psql -d $DB_NAME -f $DIR/keepright/keepright_cleanup.sql
+    else
+        echo "Omitting cleanup"
+    fi
+else
+    echo "Use minimal setup, do not load data."
+fi
 
 # echo "Install PostGIS"
 # $DIR/setup_postgis.sh -d $DB_NAME -s $DB_SCHEMA -t errors
