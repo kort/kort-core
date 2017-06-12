@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 import jprops
 import os
 import re
@@ -10,10 +9,10 @@ class I18n:
 
     class __I18n:
         def __init__(self):
-            dir = os.path.join(os.path.dirname(__file__),'..','..','..','i18n')
+            dir = os.path.join(os.path.dirname(__file__),'..','res','i18n')
             for lang in I18n.supportedLanguages:
-
-                with open(os.path.join(dir, 'KortDB_'+lang+'.props')) as fp:
+                file = 'KortDB_'+lang+'.props'
+                with open(os.path.join(dir, file)) as fp:
                     props = jprops.load_properties(fp)
                     I18n.languages[lang] = props
 
