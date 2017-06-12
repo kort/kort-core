@@ -4,13 +4,16 @@ Kort Native - Kort Backend for kort-native
 
 # Setup
 
+1. edit .env file
+
+2. setup database
+
 ```shell
-docker-compose build
-docker-compose up -d
+docker-compose build && docker-compose up -d postgres
 ```
 
-## create db
+3. run API
 
 ```shell
-docker-compose run api /usr/local/bin/python create_db.py
+docker-compose build && docker-compose up -d tokeninfo nginx api
 ```
