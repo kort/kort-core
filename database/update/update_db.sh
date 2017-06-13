@@ -1,5 +1,5 @@
 #!/bin/bash
-DIR="$( cd "$( dirname "$0" )" && pwd )"
+DIR="/docker-entrypoint-initdb.d/update"
 while getopts ":o:n:s:dcmp:" opt; do
     case $opt in
         o)
@@ -22,23 +22,25 @@ if [ -z $DB_NAME ] ; then
 fi
 
 if [ -z $DB_OWNER ] ; then
-    DB_OWNER="osm"
+    DB_OWNER="postgres"
 fi
+
+echo "do update"
 
 ####error sources###
 
 ###drop all error sources###
-echo "drop all error sources..."
-psql -d $DB_NAME -c "drop schema if exists keepright cascade;"
-psql -d $DB_NAME -c "drop schema if exists osm_errors cascade;"
-psql -d $DB_NAME -c "drop schema if exists all_errors cascade;"
+#echo "drop all error sources..."
+#psql -d $DB_NAME -c "drop schema if exists keepright cascade;"
+#psql -d $DB_NAME -c "drop schema if exists osm_errors cascade;"
+#psql -d $DB_NAME -c "drop schema if exists all_errors cascade;"
 
 ###Update error sources###
 echo "update error sources..."
 
 ###Keepright reletaded###
 echo "start keepright related update"
-$DIR/setup_keepright_db_osx.sh -o $DB_OWNER -n $DB_NAME -s keepright -l
+$DIR/../01_setup_keepright_db.sh -o $DB_OWNER -n $DB_NAME -s keepright -l
 # add geometry to table
 echo "Add geometry column to keepright.errors"
 psql -d $DB_NAME -c "select AddGeometryColumn ('keepright','errors','geom', 4326,'POINT',2);"
@@ -49,14 +51,14 @@ psql -d $DB_NAME -c "update keepright.errors set geom = ST_SetSRID(ST_Point(lon/
 echo "keepright related update ended"
 
 ###osm_errors reletaded###
-echo "start osm_errors related update"
-$DIR/setup_osm_errors_db.sh -o $DB_OWNER -n $DB_NAME -s osm_errors
-echo "osm_errors related update ended"
+#echo "start osm_errors related update"
+#$DIR/../03_setup_osm_errors_db.sh -o $DB_OWNER -n $DB_NAME -s osm_errors
+#echo "osm_errors related update ended"
 
 ### consolidate error sources and build indexes###
 echo "consolidate error sources..."
 echo "start consolidation"
-$DIR/setup_all_errors_db.sh -o $DB_OWNER -n $DB_NAME -s all_errors -c
+$DIR/../04_setup_all_errors_db.sh -o $DB_OWNER -n $DB_NAME -s all_errors -c
 echo "consolidation ended"
 
 ### rebuild kort views and update kort data - errors are possible and tolerated ###

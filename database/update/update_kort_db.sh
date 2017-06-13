@@ -1,5 +1,5 @@
 #!/bin/bash
-DIR="$( cd "$( dirname "$0" )" && pwd )"
+DIR="/docker-entrypoint-initdb.d/update"
 while getopts ":o:n:s:" opt; do
     case $opt in
         o)
@@ -30,15 +30,15 @@ if [ -z $DB_SCHEMA ] ; then
 fi
 
 if [ -z $DB_OWNER ] ; then
-    DB_OWNER="osm"
+    DB_OWNER="postgres"
 fi
 
 echo "Inserting data - errors possible and tolerated"
-psql -d $DB_NAME -f $DIR/kort/kort_data.sql
+psql -d $DB_NAME -f $DIR/../kort/kort_data.sql
 
 echo "Drop views for kort"
 for view in `psql -qAt -c "select table_schema || '.' || table_name from information_schema.views where table_schema = 'kort';" $DB_NAME` ; do  psql -c "drop table $view" $DB_NAME ; done
 
 echo "Create views for kort"
-psql -d $DB_NAME -f $DIR/kort/kort_views.sql
+psql -d $DB_NAME -f $DIR/../kort/kort_views.sql
 for view in `psql -qAt -c "select table_schema || '.' || table_name from information_schema.views where table_schema = 'kort';" $DB_NAME` ; do  psql -c "alter table $view owner to $DB_OWNER" $DB_NAME ; done

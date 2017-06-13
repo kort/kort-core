@@ -95,7 +95,7 @@ if [ -z $MINIMAL_SETUP ] ; then
     do
         echo $part_file
         #psql -d $DB_NAME -c "copy $DB_SCHEMA.errors from '$part_file' DELIMITER '	' null '\N' CSV;"
-        psql -d $DB_NAME -c "copy $DB_SCHEMA.errors from '/tmp/kr_partaa_co';" || echo "error in data file '$part_file'"
+        psql -d $DB_NAME -c "copy $DB_SCHEMA.errors from '$part_file';" || echo "error in data file '$part_file'"
     done
     echo "End."
     

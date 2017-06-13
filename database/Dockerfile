@@ -23,3 +23,6 @@ COPY 04_setup_all_errors_db.sh /docker-entrypoint-initdb.d/
 # Kort init
 COPY kort/* /docker-entrypoint-initdb.d/kort/
 COPY 05_setup_kort_db.sh /docker-entrypoint-initdb.d/
+
+# put update scripts
+COPY update/* /docker-entrypoint-initdb.d/update/
