@@ -33,7 +33,7 @@ if [ -z $DB_SCHEMA ] ; then
 fi
 
 if [ -z $DB_OWNER ] ; then
-    DB_OWNER="postgres"
+    DB_OWNER=`whoami`
 fi
 
 # Drop schema

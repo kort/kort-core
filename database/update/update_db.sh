@@ -1,5 +1,8 @@
 #!/bin/bash
 DIR="/docker-entrypoint-initdb.d/update"
+DB_NAME="osm_bugs"
+DB_OWNER="postgres"
+
 while getopts ":o:n:s:dcmp:" opt; do
     case $opt in
         o)
@@ -22,7 +25,7 @@ if [ -z $DB_NAME ] ; then
 fi
 
 if [ -z $DB_OWNER ] ; then
-    DB_OWNER="postgres"
+    DB_OWNER=`whoami`
 fi
 
 echo "do update"
@@ -31,7 +34,7 @@ echo "do update"
 
 ###drop all error sources###
 #echo "drop all error sources..."
-#psql -d $DB_NAME -c "drop schema if exists keepright cascade;"
+#psql -d $DB_NAME -c "drop schema if exists keepright;"
 #psql -d $DB_NAME -c "drop schema if exists osm_errors cascade;"
 #psql -d $DB_NAME -c "drop schema if exists all_errors cascade;"
 
@@ -40,7 +43,7 @@ echo "update error sources..."
 
 ###Keepright reletaded###
 echo "start keepright related update"
-$DIR/../01_setup_keepright_db.sh -o $DB_OWNER -n $DB_NAME -s keepright -l
+$DIR/../01_setup_keepright_db.sh -d -o $DB_OWNER
 # add geometry to table
 echo "Add geometry column to keepright.errors"
 psql -d $DB_NAME -c "select AddGeometryColumn ('keepright','errors','geom', 4326,'POINT',2);"
