@@ -46,7 +46,7 @@ for tbl in `psql -qAt -c "select schemaname || '.' || tablename from pg_tables w
 
 # Load osm_errors data
 # echo "Load OSM errors from Overpass API"
-# python3 $DIR/../src/mission_creator/main.py
+python3.4 $DIR/mission_creator/main.py
 
 echo "Creating indexes"
 psql -d $DB_NAME -f $DIR/osm_errors/osm_errors_index.sql
