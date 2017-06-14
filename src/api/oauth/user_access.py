@@ -1,3 +1,5 @@
+import uuid
+
 import api.models
 db_session = api.models.init_db()
 import datetime
@@ -51,5 +53,6 @@ def create_user(provider: str, data: str, token: str) -> str:
     return user
 
 def generate_secret() -> str:
-    return 'the_super_secret'+datetime.datetime.utcnow().strftime('%Y-%m-%d%H:%M:%S.%f')[:-3]
+    hash =  uuid.uuid4()
+    return hash
 
