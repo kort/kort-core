@@ -96,7 +96,10 @@ if __name__ == '__main__':
     lat = bbox[0]
     lon = bbox[1]
     no_of_bboxes = round((bbox[3] - bbox[1])/increment_lon)*round((bbox[2] - bbox[0])/increment_lat)
-    progressChange = 1.0 / no_of_bboxes
+    if no_of_bboxes != 0:
+        progressChange = 1.0 / no_of_bboxes
+    else:
+        progressChange = 1.0
     progress = 0.0
     print('no of bboxes: ', no_of_bboxes)
     for x in range(0, round((bbox[3] - bbox[1])/increment_lon)):
