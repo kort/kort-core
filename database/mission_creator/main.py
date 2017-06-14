@@ -13,8 +13,8 @@ import models
 from models import osm_error
 import overpass_queries
 
-def add_errors_from_query(mission_type, results):
-    for element in results.get('elements'):
+def add_errors_from_query(mission_type, elements):
+    for element in elements:
         if element.get('type') == 'node':
             lon = element.get('lon')
             lat = element.get('lat')
@@ -56,22 +56,27 @@ def retrieve_data_with_bbox(current_bbox):
                 try:
                     print('request overpass with query ' + query + ' and bbox ' + current_bbox)
                     response = api.Get(query.replace('bbox', current_bbox), responseformat="json")
-                    print('adding errors to database')
-                    add_errors_from_query(mission_type, response)
+                    elements = response.get('elements')
+                    print('adding errors to database, no of elements:', len(elements))
+                    add_errors_from_query(mission_type, elements)
                     # sometimes a MultipleRequestsError (429) happens when too many queries are being sent
-                    time.sleep(1)
+                    if len(elements) > 0:
+                        time.sleep(1)
                 except MultipleRequestsError as e:
                     if i < no_of_tries - 1:
+                        print('MultipleRequestsError no.'+i+' -> sleep for'+(10+10*i)+' seconds')
                         time.sleep(10+10*i)
                         continue
                 except ServerLoadError as e:
                     if i < no_of_tries - 1:
+                        print('ServerLoadError no.'+i+' -> sleep for 10 minutes')
                         time.sleep(600)
                         continue
                     else:
                         raise
                 except TimeoutError as e:
                     if i < no_of_tries - 1:
+                        print('TimeoutError no.'+i+' -> sleep for 10 minutes')
                         time.sleep(600)
                         continue
                 break
@@ -90,7 +95,10 @@ if __name__ == '__main__':
 
     lat = bbox[0]
     lon = bbox[1]
-    print('no of bboxes: ', round((bbox[3] - bbox[1])/increment_lon)*round((bbox[2] - bbox[0])/increment_lat))
+    no_of_bboxes = round((bbox[3] - bbox[1])/increment_lon)*round((bbox[2] - bbox[0])/increment_lat)
+    progressChange = 1.0 / no_of_bboxes
+    progress = 0.0
+    print('no of bboxes: ', no_of_bboxes)
     for x in range(0, round((bbox[3] - bbox[1])/increment_lon)):
         lon = bbox[1] + x * increment_lon
         for y in range(0, round((bbox[2] - bbox[0])/increment_lat)):
@@ -98,6 +106,8 @@ if __name__ == '__main__':
             current_bbox = '(' + str(lat) + ',' + str(lon) + ',' + str(lat + increment_lat) + ',' + str(
                 lon + increment_lon) + ')'
             retrieve_data_with_bbox(current_bbox)
+            progress += progressChange
+            print('progress: ', round(progress*100, 2), '%')
 
 
 
