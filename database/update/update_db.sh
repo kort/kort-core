@@ -55,13 +55,13 @@ echo "keepright related update ended"
 
 ###osm_errors reletaded###
 echo "start osm_errors related update"
-$DIR/../03_setup_osm_errors_db.sh -o $DB_OWNER -n $DB_NAME -s osm_errors
+$DIR/../03_setup_osm_errors_db.sh -d -o $DB_OWNER -n $DB_NAME -s osm_errors
 echo "osm_errors related update ended"
 
 ### consolidate error sources and build indexes###
 echo "consolidate error sources..."
 echo "start consolidation"
-$DIR/../04_setup_all_errors_db.sh -o $DB_OWNER -n $DB_NAME -s all_errors -c
+$DIR/../04_setup_all_errors_db.sh -d -o $DB_OWNER -n $DB_NAME -s all_errors -c
 echo "consolidation ended"
 
 ### rebuild kort views and update kort data - errors are possible and tolerated ###

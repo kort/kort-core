@@ -11,9 +11,13 @@ while getopts ":o:n:s:dclmp:" opt; do
         s)
             DB_SCHEMA="$OPTARG"
             ;;
+        d)
+            DROP_DB="true"
+            ;;
         c)
             CLEANUP="true"
             ;;
+
         \?) # fall-through
             ;;
         :)
@@ -38,14 +42,19 @@ fi
 
 # Drop schema
 DB_SCHEMA="all_errors"
-echo "Dropping schema $DB_SCHEMA"
-psql -d $DB_NAME -c "drop schema if exists $DB_SCHEMA cascade;"
+ if [[ $DROP_DB ]] ; then
+      echo "DROP NOTHING"
+ else
+    echo "Dropping schema $DB_SCHEMA"
+    psql -d $DB_NAME -c "drop schema if exists $DB_SCHEMA cascade;"
 
-# Create schema
-psql -d $DB_NAME -c "create schema $DB_SCHEMA authorization $DB_OWNER"
-psql -d $DB_NAME -f $DIR/all_errors/all_errors.sql
-echo "Transfer ownership of all objects to $DB_OWNER"
-for tbl in `psql -qAt -c "select schemaname || '.' || tablename from pg_tables where schemaname = '$DB_SCHEMA';" $DB_NAME` ; do  psql -c "alter table $tbl owner to $DB_OWNER" $DB_NAME ; done
+    # Create schema
+    psql -d $DB_NAME -c "create schema $DB_SCHEMA authorization $DB_OWNER"
+    psql -d $DB_NAME -f $DIR/all_errors/all_errors.sql
+    echo "Transfer ownership of all objects to $DB_OWNER"
+    for tbl in `psql -qAt -c "select schemaname || '.' || tablename from pg_tables where schemaname = '$DB_SCHEMA';" $DB_NAME` ; do  psql -c "alter table $tbl owner to $DB_OWNER" $DB_NAME ; done
+ fi
+
 
 # Consolidate all errors
 echo "Consolidate all errors"

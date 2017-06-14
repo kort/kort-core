@@ -5,6 +5,9 @@ while getopts ":o:n:s:dcmp:" opt; do
         o)
             DB_OWNER="$OPTARG"
             ;;
+        d)
+            DROP_DB="true"
+            ;;
         n)
             DB_NAME="$OPTARG"
             ;;
@@ -35,14 +38,19 @@ fi
 
 # Drop schema
 DB_SCHEMA="osm_errors"
-echo "Dropping schema $DB_SCHEMA"
-psql -d $DB_NAME -c "drop schema if exists $DB_SCHEMA cascade;"
+ if [[ $DROP_DB ]] ; then
+      echo "DROP NOTHING"
+ else
+    echo "Dropping schema $DB_SCHEMA"
+    psql -d $DB_NAME -c "drop schema if exists $DB_SCHEMA cascade;"
 
-# Create schema
-psql -d $DB_NAME -c "create schema $DB_SCHEMA authorization $DB_OWNER"
-psql -d $DB_NAME -f $DIR/osm_errors/osm_errors.sql
-echo "Transfer ownership of all objects to $DB_OWNER"
-for tbl in `psql -qAt -c "select schemaname || '.' || tablename from pg_tables where schemaname = '$DB_SCHEMA';" $DB_NAME` ; do  psql -c "alter table $tbl owner to $DB_OWNER" $DB_NAME ; done
+    # Create schema
+    psql -d $DB_NAME -c "create schema $DB_SCHEMA authorization $DB_OWNER"
+    psql -d $DB_NAME -f $DIR/osm_errors/osm_errors.sql
+    echo "Transfer ownership of all objects to $DB_OWNER"
+    for tbl in `psql -qAt -c "select schemaname || '.' || tablename from pg_tables where schemaname = '$DB_SCHEMA';" $DB_NAME` ; do  psql -c "alter table $tbl owner to $DB_OWNER" $DB_NAME ; done
+ fi
+
 
 # Load osm_errors data
 # echo "Load OSM errors from Overpass API"
