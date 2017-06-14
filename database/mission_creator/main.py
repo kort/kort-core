@@ -64,19 +64,19 @@ def retrieve_data_with_bbox(current_bbox):
                         time.sleep(1)
                 except MultipleRequestsError as e:
                     if i < no_of_tries - 1:
-                        print('MultipleRequestsError no.'+i+' -> sleep for'+str(10+10*i)+' seconds')
+                        print('MultipleRequestsError no.'+str(i)+' -> sleep for'+str(10+10*i)+' seconds')
                         time.sleep(10+10*i)
                         continue
                 except ServerLoadError as e:
                     if i < no_of_tries - 1:
-                        print('ServerLoadError no.'+i+' -> sleep for 10 minutes')
+                        print('ServerLoadError no.'+str(i)+' -> sleep for 10 minutes')
                         time.sleep(600)
                         continue
                     else:
                         raise
                 except TimeoutError as e:
                     if i < no_of_tries - 1:
-                        print('TimeoutError no.'+i+' -> sleep for 10 minutes')
+                        print('TimeoutError no.'+str(i)+' -> sleep for 10 minutes')
                         time.sleep(600)
                         continue
                 break
