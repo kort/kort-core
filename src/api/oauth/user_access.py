@@ -12,7 +12,6 @@ def get_user_secret(provider: str, id: str) -> object:
     return user
 
 def update_user(provider: str, secret: str, data: str):
-    #TODO token also to be updated?
     if provider is 'google':
         user = db_session.query(api.models.User).filter(api.models.User.secret == secret).one_or_none()
         user.pic_url = data.get('picture', user.pic_url)
@@ -36,8 +35,8 @@ def create_user(provider: str, data: str, token: str) -> str:
         secret = generate_secret()
         print('data', data, token)
         try:
-            user = api.models.User(name=data['name'], username=data['email'], oauth_provider=provider,
-                                   oauth_user_id=data['sub'], pic_url=data['picture'], secret=secret, token=token)
+            user = api.models.User(name=data.get('name', ''), username=data.get('email', ''), oauth_provider=provider,
+                                   oauth_user_id=data.get('sub', ''), pic_url=data.get('picture', ''), secret=secret, token=token)
             print(user)
             db_session.add(user)
             db_session.commit()
