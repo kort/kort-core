@@ -11,6 +11,7 @@ def get_user_secret(provider: str, id: str) -> object:
     user = db_session.query(api.models.User).filter(api.models.User.oauth_user_id == id).filter(api.models.User.oauth_provider == provider).one_or_none()
     return user
 
+
 def update_user(provider: str, secret: str, data: str):
     if provider is 'google':
         user = db_session.query(api.models.User).filter(api.models.User.secret == secret).one_or_none()
@@ -51,7 +52,7 @@ def create_user(provider: str, data: str, token: str) -> str:
         db_session.commit()
     return user
 
+
 def generate_secret() -> str:
-    hash =  uuid.uuid4()
-    return hash
+    return uuid.uuid4()
 
