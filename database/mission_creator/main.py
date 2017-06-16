@@ -3,6 +3,7 @@ import os
 
 import overpass
 import time
+import logging
 
 from overpass import MultipleRequestsError
 from overpass import ServerLoadError
@@ -12,6 +13,15 @@ from sqlalchemy.dialects.postgresql import insert
 import models
 from models import osm_error
 import overpass_queries
+
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+handler = logging.FileHandler('overpass.log')
+handler.setLevel(logging.INFO)
+formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+handler.setFormatter(formatter)
+logger.addHandler(handler)
+
 
 def add_errors_from_query(mission_type, elements):
     for element in elements:
@@ -47,36 +57,36 @@ def add_errors_from_query(mission_type, elements):
 
 
 def retrieve_data_with_bbox(current_bbox):
-    print('current bbox: ', current_bbox)
+    logger.debug('current bbox: '+current_bbox)
     for mission_type, queries in overpass_queries.all_requests.items():
-        print('adding errors for type '+mission_type)
+        logger.debug('adding errors for type '+mission_type)
         for query in queries:
             no_of_tries = 3
             for i in range(no_of_tries):
                 try:
-                    print('request overpass with query ' + query + ' and bbox ' + current_bbox)
+                    logger.debug('request overpass with query ' + query + ' and bbox ' + current_bbox)
                     response = api.Get(query.replace('bbox', current_bbox), responseformat="json")
                     elements = response.get('elements')
-                    print('adding errors to database, no of elements:', len(elements))
+                    logger.debug('adding errors to database, no of elements:'+str(len(elements)))
                     add_errors_from_query(mission_type, elements)
                     # sometimes a MultipleRequestsError (429) happens when too many queries are being sent
                     if len(elements) > 0:
                         time.sleep(1)
                 except MultipleRequestsError as e:
                     if i < no_of_tries - 1:
-                        print('MultipleRequestsError no.'+str(i)+' -> sleep for'+str(10+10*i)+' seconds')
+                        logger.error('MultipleRequestsError no.'+str(i)+' -> sleep for'+str(10+10*i)+' seconds, at '+current_bbox)
                         time.sleep(10+10*i)
                         continue
                 except ServerLoadError as e:
                     if i < no_of_tries - 1:
-                        print('ServerLoadError no.'+str(i)+' -> sleep for 10 minutes')
+                        logger.error('ServerLoadError no.'+str(i)+' -> sleep for 10 minutes, at '+current_bbox)
                         time.sleep(600)
                         continue
                     else:
                         raise
                 except TimeoutError as e:
                     if i < no_of_tries - 1:
-                        print('TimeoutError no.'+str(i)+' -> sleep for 10 minutes')
+                        logger.error('TimeoutError no.'+str(i)+' -> sleep for 10 minutes, at '+current_bbox)
                         time.sleep(600)
                         continue
                 break
@@ -86,7 +96,7 @@ if __name__ == '__main__':
     db_session = models.init_db()
     api = overpass.API(timeout=6000)
 
-    bbox = (47.3, 8.5, 47.4, 8.6)
+    bbox = (47.3, 8.5, 47.4, 8.9)
     if os.getenv('BBOX_OVERPASS'):
         bbox = tuple(map(float, os.getenv('BBOX_OVERPASS').split(',')))
 
@@ -101,7 +111,7 @@ if __name__ == '__main__':
     else:
         progressChange = 1.0
     progress = 0.0
-    print('no of bboxes: ', no_of_bboxes)
+    logger.info('no of bboxes: '+str(no_of_bboxes))
     for x in range(0, round((bbox[3] - bbox[1])/increment_lon)):
         lon = bbox[1] + x * increment_lon
         for y in range(0, round((bbox[2] - bbox[0])/increment_lat)):
@@ -110,7 +120,7 @@ if __name__ == '__main__':
                 lon + increment_lon) + ')'
             retrieve_data_with_bbox(current_bbox)
             progress += progressChange
-            print('progress: ', round(progress*100, 2), '%')
+            logger.info('progress: '+str(round(progress*100, 2))+'%')
 
 
 
