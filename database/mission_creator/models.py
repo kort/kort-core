@@ -1,6 +1,7 @@
 from geoalchemy2 import Geometry
 from sqlalchemy import BigInteger
 from sqlalchemy import Column
+from sqlalchemy import Enum
 from sqlalchemy import Integer
 from sqlalchemy import Numeric
 from sqlalchemy import String
@@ -31,7 +32,7 @@ class osm_error(Base):
     id                      = Column('error_id', Integer, primary_key=True, autoincrement=True)
     error_type_id           = Column(Integer, primary_key=False)
     object_id               = Column(BigInteger, primary_key=True)
-    object_type             = Column(String, primary_key=True)
+    object_type             = Column(Enum('node', 'way', 'relation', name='osm_type'), primary_key=True)
     error_name              = Column(String, primary_key=False)
     geom                    = Column(Geometry, nullable=False)
     lat                     = Column(Numeric, primary_key=False)
