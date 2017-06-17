@@ -10,6 +10,18 @@ error_type.title.missing_cuisine=Art des Restaurants
 error_type.title.opening_hours=Fehelnde Öffnungszeiten
 error_type.title.levels=Fehlende Stockwerkzahl
 
+# error constraints
+bug.motorway.re.description=
+bug.place_of_worship.re.description=
+bug.poi.re.description=
+bug.speed.re.description=Der Wert muss zwischen 20 und 200 liegen.
+bug.language.re.description=
+bug.track.re.description=
+bug.name_of_street.re.description=
+bug.cuisine_of_restaurant.re.description=
+bug.opening_hours.re.description=
+bug.level.re.description=Der Wert muss zwischen 1 und 200 liegen.
+
 
 # badge names
 badge.name.first_place=Erster Rang

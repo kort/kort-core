@@ -10,6 +10,17 @@ error_type.title.missing_cuisine=Restaurant without a cuisine
 error_type.title.opening_hours=Place without opening hours
 error_type.title.level=Missing Levels
 
+# error constraints
+bug.motorway.re.description=
+bug.place_of_worship.re.description=
+bug.poi.re.description=
+bug.speed.re.description=The value must be between 20 and 200.
+bug.language.re.description=
+bug.track.re.description=
+bug.name_of_street.re.description=
+bug.cuisine_of_restaurant.re.description=
+bug.opening_hours.re.description=
+bug.level.re.description=The value must be between 1 and 200.
 
 # badge names
 badge.name.first_place=1st Place
