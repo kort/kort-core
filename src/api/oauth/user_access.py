@@ -47,7 +47,7 @@ def create_user(provider: str, data: str, token: str) -> str:
     if provider is 'osm':
         d = json.loads(data)
         secret = generate_secret()
-        user = api.models.User(name=d['display_name'], username=d['display_name'], oauth_provider=provider,
+        user = api.models.User(name=d['display_name'], username=d['display_name'], email='', oauth_provider=provider,
                                oauth_user_id=d['id'], pic_url=d.get('img', ''), secret=secret, token=token)
         db_session.add(user)
         db_session.commit()
