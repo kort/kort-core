@@ -8,7 +8,7 @@ error_type.title.language_name=Sprache des Namens unbekannt
 error_type.title.street_wo_name=Strasse ohne Namen
 error_type.title.missing_cuisine=Art des Restaurants
 error_type.title.opening_hours=Fehelnde Öffnungszeiten
-error_type.title.levels=Fehlende Stockwerkzahl
+error_type.title.level=Fehlende Stockwerkzahl
 
 # error constraints
 bug.motorway.re.description=
