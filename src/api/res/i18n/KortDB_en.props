@@ -11,17 +11,6 @@ error_type.title.opening_hours=Place without opening hours
 error_type.title.level=Missing Levels
 
 
-# error type placeholders
-error_type.placeholder.ref=Reference
-error_type.placeholder.religion=Religion
-error_type.placeholder.name=Name
-error_type.placeholder.speed_limit=Speed limit
-error_type.placeholder.language=Language
-error_type.placeholder.type=Type
-error_type.placeholder.street_name=Name of street
-error_type.placeholder.missing_cuisine=Cuisine
-
-
 # badge names
 badge.name.first_place=1st Place
 badge.name.second_place=2nd Place
