@@ -16,8 +16,9 @@ def update_user(provider: str, secret: str, data: str):
     if provider is 'google':
         user = db_session.query(api.models.User).filter(api.models.User.secret == secret).one_or_none()
         user.pic_url = data.get('picture', user.pic_url)
-        user.name = data.get('name', user.name)
-        user.username = data.get('email', user.username)
+        user.name = data.get('given_name', user.name)
+        user.username = data.get('name', user.name)
+        user.email = data.get('email', user.username)
         user.last_login = datetime.datetime.utcnow()
         db_session.commit()
     if provider is 'osm':
@@ -36,7 +37,7 @@ def create_user(provider: str, data: str, token: str) -> str:
         secret = generate_secret()
         print('data', data, token)
         try:
-            user = api.models.User(name=data.get('name', ''), username=data.get('email', ''), oauth_provider=provider,
+            user = api.models.User(name=data.get('given_name', ''), username=data.get('name', ''), email=data.get('email', ''), oauth_provider=provider,
                                    oauth_user_id=data.get('sub', ''), pic_url=data.get('picture', ''), secret=secret, token=token)
             print(user)
             db_session.add(user)

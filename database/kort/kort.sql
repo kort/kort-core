@@ -43,6 +43,7 @@ create table kort.user (
     user_id integer primary key default nextval('kort.user_id'),
     name varchar(100) not null,
     username varchar(100),
+    email varchar(100),
     logged_in boolean,
     last_login timestamp not null DEFAULT now(),
     token text,

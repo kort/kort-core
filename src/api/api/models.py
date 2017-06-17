@@ -40,6 +40,7 @@ class User(Base):
     secret              = Column(String, nullable=False, unique=True)
     name                = Column(String, nullable=False)
     username            = Column(String, nullable=False)
+    email               = Column(String, nullable=False)
     oauth_provider      = Column(String, nullable=False)
     oauth_user_id       = Column(String, nullable=False)
     pic_url             = Column(String, nullable=True)
@@ -48,9 +49,10 @@ class User(Base):
     last_login          = Column(DateTime, nullable=False)
     UniqueConstraint(oauth_provider, oauth_user_id, name='unique_oauth_user')
 
-    def __init__(self, name, username, oauth_provider, oauth_user_id, pic_url, secret, token):
+    def __init__(self, name, username, email, oauth_provider, oauth_user_id, pic_url, secret, token):
         self.name = name
         self.username = username
+        self.email = email
         self.oauth_provider = oauth_provider
         self.oauth_user_id = oauth_user_id
         self.pic_url = pic_url
