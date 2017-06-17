@@ -57,21 +57,23 @@ fi
  if [[ $DROP_DB ]] ; then
 #     echo "Dropping schema $DB_SCHEMA"
 #     psql -d $DB_NAME -c "drop schema if exists $DB_SCHEMA cascade;"
-      echo "DROP NOTHING"
+      echo "DROP TABLE and reCREATE keepright.errors;"
+      psql -d $DB_NAME -c "DROP TABLE keepright.errors;"
+      psql -d $DB_NAME -f $DIR/keepright/keepright.sql
  else
      echo "Dropping database $DB_NAME"
      psql -c "drop database if exists $DB_NAME;"
 
      echo "Create database $DB_NAME (Owner: $DB_OWNER)"
      createdb -E UTF8 -O $DB_OWNER $DB_NAME
+
+     # Create schema
+    psql -d $DB_NAME -c "create schema $DB_SCHEMA authorization $DB_OWNER"
+    psql -d $DB_NAME -f $DIR/keepright/keepright.sql
+    echo "Transfer ownership of all objects to $DB_OWNER"
+    for tbl in `psql -qAt -c "select schemaname || '.' || tablename from pg_tables where schemaname = '$DB_SCHEMA';" $DB_NAME` ; do  psql -c "alter table $tbl owner to $DB_OWNER" $DB_NAME ; done
  fi
 
-
-# Create schema
-psql -d $DB_NAME -c "create schema $DB_SCHEMA authorization $DB_OWNER"
-psql -d $DB_NAME -f $DIR/keepright/keepright.sql
-echo "Transfer ownership of all objects to $DB_OWNER"
-for tbl in `psql -qAt -c "select schemaname || '.' || tablename from pg_tables where schemaname = '$DB_SCHEMA';" $DB_NAME` ; do  psql -c "alter table $tbl owner to $DB_OWNER" $DB_NAME ; done
 
 # Load keepright data
 if [ -z $MINIMAL_SETUP ] ; then

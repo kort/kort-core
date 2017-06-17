@@ -1,3 +1,8 @@
+CREATE OR REPLACE RULE "osm_error_duplicate_in_all_errors" AS ON INSERT TO all_errors.errors
+  WHERE EXISTS(SELECT 1 FROM all_errors.errors
+                WHERE (schema, error_type_id, osm_id, osm_type)=(NEW.schema, NEW.error_type_id, NEW.osm_id, osm_type))
+  DO INSTEAD NOTHING;
+
 INSERT INTO all_errors.errors (source,error_id,schema,error_type_id,osm_id,osm_type,description,latitude,longitude,geom,txt1,txt2,txt3,txt4,txt5)
 SELECT DISTINCT 'keepright' AS source, error_id, schema, error_type_id,object_id AS osm_id, object_type AS osm_type, msgid AS description, lat AS latitude, lon AS longitude, geom, txt1, txt2, txt3, txt4, txt5
 FROM keepright.errors

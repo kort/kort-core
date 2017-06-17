@@ -40,6 +40,7 @@ fi
 DB_SCHEMA="osm_errors"
  if [[ $DROP_DB ]] ; then
       echo "DROP NOTHING"
+#      psql -c "drop table osm_errors.errors;"
  else
     echo "Dropping schema $DB_SCHEMA"
     psql -d $DB_NAME -c "drop schema if exists $DB_SCHEMA cascade;"
