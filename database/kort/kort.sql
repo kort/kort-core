@@ -81,26 +81,6 @@ create table kort.answer (
     foreign key (type) references kort.error_type (type)
 );
 
-create or replace function check_fix_onlyone_pending_per_error()
-returns trigger as
-$$
-declare
-    pending_count integer;
-begin
-    select  count(1)
-    into pending_count
-    from kort.fix
-    where error_id = new.error_id
-    and   schema = new.schema
-    and   osm_id = new.osm_id
-    and   not complete;
-
-    if pending_count > 1 then
-        raise exception 'There may only be one pending fix (%, %, %)', new.error_id, new.schema, new.osm_id;
-    end if;
-    return new;
-end
-$$ language plpgsql;
 
 create or replace function reset_kort() returns boolean as $$
 begin
@@ -114,5 +94,40 @@ exception
 end;
 $$ language plpgsql;
 
--- create trigger only_one_pending_per_error after insert or update on kort.fix
--- for each row execute procedure check_fix_onlyone_pending_per_error();
+
+CREATE OR REPLACE FUNCTION check_if_answer_is_valid_and_update_koin_counts()
+RETURNS TRIGGER AS $$
+declare
+    valid_missions_count integer;
+    koin_reward_count integer;
+begin
+    SELECT count(*)
+    INTO valid_missions_count
+    FROM kort.fix
+    WHERE error_id = NEW.error_id
+    AND   schema = NEW.schema
+    AND   osm_id = NEW.osm_id
+    AND   NOT complete;
+
+    IF valid_missions_count >= 3 THEN
+        SELECT vote_koin_count
+        INTO koin_reward_count
+        FROM kort.errors
+        WHERE id = NEW.error_id
+        AND   schema = NEW.schema
+        AND   osm_id = NEW.osm_id;
+        UPDATE kort.fix
+        SET     complete=TRUE,
+                fix_koin_count=fix_koin_count+koin_reward_count
+        WHERE error_id = NEW.error_id
+        AND   schema = NEW.schema
+        AND   osm_id = NEW.osm_id
+        AND   NOT complete;
+    END IF;
+    return NEW;
+end
+$$ language plpgsql;
+
+
+CREATE TRIGGER trigger_check_if_answer_is_valid_and_update_koin_counts AFTER INSERT OR UPDATE ON kort.fix
+for each row execute procedure check_if_answer_is_valid_and_update_koin_counts();
