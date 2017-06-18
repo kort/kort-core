@@ -15,7 +15,7 @@ from datetime import date
 db_session = api.models.init_db()
 
 
-def get_missions(lat, lon, radius, limit, lang, user_id = -1):
+def get_missions(lat, lon, radius, limit, lang, user_id):
     try:
         location = WKTElement('POINT('+str(lon)+' '+str(lat)+')', srid=4326)
 
@@ -73,8 +73,8 @@ def put_mission_solution(schema_id, error_id, lang, body):
                 schema=schema_id,
                 osmId=s['osm_id'],
                 solution=answer,
-                complete=s['solved'],
-                valid=True)
+                complete=False,
+                valid=s['solved'])
             db_session.add(new_solution)
             db_session.commit()
 
