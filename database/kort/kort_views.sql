@@ -50,7 +50,7 @@ and     not exists (
         where f.error_id = e.error_id
         and   f.osm_id = e.osm_id
         and   f.schema = e.schema
-        and ((f.complete and f.valid) or (not f.complete)));
+        and   (f.complete or not f.valid));
 
 create or replace view kort.validations as
 select  f.fix_id id,

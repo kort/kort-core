@@ -1,5 +1,4 @@
 create sequence kort.fix_id;
-create sequence kort.vote_id;
 create sequence kort.user_id;
 
 create table kort.error_type (
@@ -82,17 +81,6 @@ create table kort.answer (
     foreign key (type) references kort.error_type (type)
 );
 
-create table kort.vote (
-    vote_id integer primary key default nextval('kort.vote_id'),
-    user_id integer,
-    fix_id integer,
-    valid boolean,
-    create_date timestamp not null default now(),
-    unique(user_id, fix_id),
-    foreign key (user_id) references kort.user (user_id),
-    foreign key (fix_id) references kort.fix (fix_id)
-);
-
 create or replace function check_fix_onlyone_pending_per_error()
 returns trigger as
 $$
@@ -117,7 +105,6 @@ $$ language plpgsql;
 create or replace function reset_kort() returns boolean as $$
 begin
     delete from kort.user_badge;
-    delete from kort.vote;
     delete from kort.fix;
 
     return true;
@@ -127,5 +114,5 @@ exception
 end;
 $$ language plpgsql;
 
-create trigger only_one_pending_per_error after insert or update on kort.fix
-for each row execute procedure check_fix_onlyone_pending_per_error();
+-- create trigger only_one_pending_per_error after insert or update on kort.fix
+-- for each row execute procedure check_fix_onlyone_pending_per_error();
