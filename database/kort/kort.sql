@@ -97,37 +97,38 @@ $$ language plpgsql;
 
 CREATE OR REPLACE FUNCTION check_if_answer_is_valid_and_update_koin_counts()
 RETURNS TRIGGER AS $$
-declare
-    valid_missions_count integer;
-    koin_reward_count integer;
-begin
-    SELECT count(*)
-    INTO valid_missions_count
-    FROM kort.fix
-    WHERE error_id = NEW.error_id
-    AND   schema = NEW.schema
-    AND   osm_id = NEW.osm_id
-    AND   NOT complete;
+DECLARE
+    valid_missions_ids INTEGER[];
+    koin_reward_count INT;
+    no_of_validations INT := 3;
+BEGIN
+        SELECT array_agg(fix.fix_id)
+        INTO valid_missions_ids
+        FROM kort.fix
+        WHERE error_id = NEW.error_id
+        AND   schema = NEW.schema
+        AND   osm_id = NEW.osm_id
+        AND   NOT complete
+        GROUP BY message having count(*) >= no_of_validations;
 
-    IF valid_missions_count >= 3 THEN
+    IF array_length(valid_missions_ids, 1) >= no_of_validations THEN
         SELECT vote_koin_count
         INTO koin_reward_count
         FROM kort.errors
         WHERE id = NEW.error_id
         AND   schema = NEW.schema
         AND   osm_id = NEW.osm_id;
+
         UPDATE kort.fix
         SET     complete=TRUE,
                 fix_koin_count=fix_koin_count+koin_reward_count
-        WHERE error_id = NEW.error_id
-        AND   schema = NEW.schema
-        AND   osm_id = NEW.osm_id
-        AND   NOT complete;
+        WHERE fix_id IN (SELECT unnest(valid_missions_ids));
+
     END IF;
     return NEW;
-end
-$$ language plpgsql;
+END
+$$ LANGUAGE plpgsql;
 
 
-CREATE TRIGGER trigger_check_if_answer_is_valid_and_update_koin_counts AFTER INSERT OR UPDATE ON kort.fix
+CREATE OR REPLACE TRIGGER trigger_check_if_answer_is_valid_and_update_koin_counts AFTER INSERT OR UPDATE ON kort.fix
 for each row execute procedure check_if_answer_is_valid_and_update_koin_counts();
