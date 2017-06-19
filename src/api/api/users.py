@@ -17,9 +17,11 @@ def get_user(user_id):
         filter(api.models.User.secret == secret).one_or_none()
 
     #get koin_count, mission_count_today and mission_count
-    mission_count = db_session.query(api.models.Solution).filter(api.models.Solution.user_id == user_id).count()
-    mission_count_today = db_session.query(api.models.Solution).filter(api.models.Solution.user_id == user_id). \
-        filter(cast(api.models.Solution.create_date,Date) == date.today()).count()
+    mission_count = db_session.query(api.models.Solution).filter(api.models.Solution.user_id == user_id)\
+        .filter(api.models.Solution.valid).count()
+    mission_count_today = db_session.query(api.models.Solution).filter(api.models.Solution.user_id == user_id)\
+        .filter(api.models.Solution.valid)\
+        .filter(cast(api.models.Solution.create_date, Date) == date.today()).count()
     koin_count = db_session.query(func.sum(api.models.Solution.koin_count)).filter(api.models.Solution.user_id == user_id).scalar()
 
     print(user)
