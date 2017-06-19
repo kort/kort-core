@@ -56,6 +56,7 @@ def put_mission_solution(schema_id, error_id, lang, body):
         user_id = s['userId']
         koins = s['koins']
         answer = s['value']
+        solved = s['solved']
         if s['option']:
             answer = s['option']
 
@@ -69,17 +70,17 @@ def put_mission_solution(schema_id, error_id, lang, body):
                 create_date=datetime.datetime.utcnow(),
                 error_id=error_id,
                 error_type=error_type,
-                koin_count=koins,
+                koin_count=koins if solved else 0,
                 schema=schema_id,
                 osmId=s['osm_id'],
                 solution=answer,
                 complete=False,
-                valid=s['solved'])
+                valid=solved)
             db_session.add(new_solution)
             db_session.commit()
 
-            # get new badges for this user
-            return create_new_achievements(user_id=user_id, solution=s, lang=lang, mission_type=error_type)
+            # get new badges for this user if solved
+            return create_new_achievements(user_id=user_id, solution=s, lang=lang, mission_type=error_type) if solved else []
         else:
             return NoContent, 404
 
