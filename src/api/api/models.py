@@ -87,6 +87,7 @@ class kort_errors(Base):
     view_type               = Column(String, primary_key=False)
     answer_placeholder      = Column(String, primary_key=False)
     fix_koin_count          = Column(Integer, primary_key=False)
+    vote_koin_count          = Column(Integer, primary_key=False)
     image                   = Column(String, primary_key=False)
     constraint_re_description = Column(String, primary_key=False)
     constraint_re           = Column(String, primary_key=False, nullable=True)
@@ -109,7 +110,7 @@ class kort_errors(Base):
         d['annotationCoordinate'] = [float(d.pop('latitude')), float(d.pop('longitude'))]
         d['geomType'] = 'point' if d['osmType'] == 'node' else 'line'
         d['koinReward'] = d.pop('fix_koin_count')
-
+        d['koinRewardWhenComplete'] = d.pop('vote_koin_count')
 
         d['question'] = locale.translateQuestion(lang, d['question'], d.pop('txt1'), d.pop('txt2'), d.pop('txt3'), d.pop('txt4'), d.pop('txt5'))
         d['title'] = locale.translate(lang, d['title'])

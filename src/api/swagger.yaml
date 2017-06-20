@@ -322,6 +322,10 @@ definitions:
         type: integer
         description: number of koins as reward
         example: 1
+      koinRewardWhenComplete:
+        type: integer
+        description: number of koins when answer is complete
+        example: 1
       image:
         type: string
         description: the image file for the annotation either as URL or local filename for app
