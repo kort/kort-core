@@ -28,10 +28,14 @@ paths:
           description: return user
           schema:
             $ref: '#/definitions/User'
+        400:
+          description: bad request
         401:
           description: unauthorized
         404:
           description: user does not exist
+        500:
+          description: internal server error
 
   /missions:
     get:
@@ -73,6 +77,10 @@ paths:
             type: array
             items:
               $ref: '#/definitions/Mission'
+        400:
+          description: bad request
+        500:
+          description: internal server error
   /missions/{schema_id}/{error_id}/solution:
     post:
       tags: [Mission]
@@ -96,6 +104,12 @@ paths:
             type: array
             items:
               $ref: '#/definitions/Achievement'
+        400:
+          description: bad request
+        404:
+          description: an error occured
+        500:
+          description: internal server error
   /missions/osm/{osm_type}/{osm_id}:
     get:
       tags: [Mission]
@@ -107,7 +121,10 @@ paths:
       responses:
         200:
           description: returns list of coordinates
-
+        400:
+          description: bad request
+        500:
+          description: internal server error
 
   /highscore:
     get:
@@ -137,6 +154,10 @@ paths:
             type: array
             items:
               $ref: '#/definitions/Highscore'
+        400:
+          description: bad request
+        500:
+          description: internal server error
 
   /achievements:
     get:
@@ -160,6 +181,10 @@ paths:
             type: array
             items:
               $ref: '#/definitions/Achievement'
+        400:
+          description: bad request
+        500:
+          description: internal server error
 
   /statistics:
     get:
@@ -171,6 +196,9 @@ paths:
           description: return the current statistics
           schema:
             $ref: '#/definitions/Statistics'
+        500:
+          description: internal server error
+
 parameters:
   user_id:
     name: user_id
