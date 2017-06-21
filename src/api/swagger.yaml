@@ -1,12 +1,12 @@
 swagger: '2.0'
 info:
   title: Kort API
-  version: "0.1"
+  version: "1.0"
 consumes:
   - application/json
 produces:
   - application/json
-basePath: /v0.1
+basePath: /v1.0
 
 paths:
 
@@ -450,16 +450,16 @@ definitions:
         description: id
       fix_count:
         type: integer
-        description: self-explanatory
+        description: the number of solved missions (includes unsolved missions)
       complete_fix_count:
         type: integer
-        description: self-explanatory
+        description: the number of solved missions which have been completed with the help of other answers and are ready to be submitted to OSM
       incomplete_fix_count:
         type: integer
-        description: self-explanatory
+        description: the number of missions which have not yet been completed with the help of other answers
       validated_fix_count:
         type: integer
-        description: self-explanatory
+        description: the number of solved missions
       user_count:
         type: integer
         description: self-explanatory
@@ -474,7 +474,7 @@ definitions:
         description: self-explanatory
       badge_count:
         type: integer
-        description: self-explanatory
+        description: the total number of achievements which have been obtained
       solved_motorway_ref_count:
         type: integer
         description: self-explanatory
