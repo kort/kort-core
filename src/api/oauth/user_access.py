@@ -6,6 +6,9 @@ import datetime
 import json
 import logging
 
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
 
 def get_user_secret(provider: str, id: str) -> object:
     user = db_session.query(api.models.User).filter(api.models.User.oauth_user_id == id).filter(api.models.User.oauth_provider == provider).one_or_none()
@@ -35,11 +38,11 @@ def update_user(provider: str, secret: str, data: str):
 def create_user(provider: str, data: str, token: str) -> str:
     if provider is 'google':
         secret = generate_secret()
-        print('data', data, token)
+        logger.debug('create google user')
         try:
             user = api.models.User(name=data.get('given_name', ''), username=data.get('name', ''), email=data.get('email', ''), oauth_provider=provider,
                                    oauth_user_id=data.get('sub', ''), pic_url=data.get('picture', ''), secret=secret, token=token)
-            print(user)
+            logger.debug('user created')
             db_session.add(user)
             db_session.commit()
         except Exception as e:

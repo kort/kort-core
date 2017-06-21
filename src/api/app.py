@@ -1,11 +1,6 @@
 #!/usr/bin/env python3
-import os
-import sys
-
 from api import models, users, missions, highscores
-
 import connexion
-from config.config import BaseConfig
 
 db_session = models.init_db()
 app = connexion.App(__name__)
@@ -22,7 +17,6 @@ application.register_blueprint(google_oauth_provider)
 # OpenStreetMap OAuth blueprint
 from oauth.osm import osm_oauth_provider
 application.register_blueprint(osm_oauth_provider)
-
 
 
 @application.teardown_appcontext

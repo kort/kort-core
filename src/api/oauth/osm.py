@@ -1,3 +1,4 @@
+import logging
 from flask import Blueprint, redirect, url_for, session, request, jsonify
 from flask_oauthlib.client import OAuth
 import requests
@@ -11,6 +12,8 @@ from app import app
 from . import user_access
 from config.config import BaseConfig
 
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 oauth = OAuth(app.app)
 
@@ -29,6 +32,7 @@ deepLinkURL = 'kortapp://payload'
 deepLinkSecret = 'secret'
 deepLinkUserId = 'userId'
 
+
 @osm_oauth_provider.route('/osm/login')
 def home():
     return osm.authorize(callback=url_for('.authorized', _external=True))
@@ -37,29 +41,22 @@ def home():
 @osm_oauth_provider.route('/osm/login/authorized')
 @osm.authorized_handler
 def authorized(resp):
-    print('go back')
-
     if resp is None:
         return 'Access denied: error=%s' % (
             request.args['error']
         )
     if 'oauth_token' in resp:
         session['example_oauth'] = resp
-        # return jsonify(resp)
-        userinfo = getUserInfo(session['example_oauth'])
-        print(userinfo)
+        userinfo = get_user_info(session['example_oauth'])
         user = user_access.get_user_secret('osm', userinfo['id'])
         if user:
             # update user details
             user_access.update_user('osm', user.secret,  json.dumps(userinfo))
-            print('updated')
         else:
             user = user_access.create_user('osm', json.dumps(userinfo), userinfo['oauth_token'])
-        # return jsonify({"secret": secret})
         url = ('{}?{}={}&{}={}'.format(deepLinkURL, deepLinkSecret, user.secret, deepLinkUserId, user.id))
         return redirect(url, code=302)
     return redirect(deepLinkURL+"error?", code=302)
-
 
 
 @osm.tokengetter
@@ -69,7 +66,7 @@ def example_oauth_token():
         return resp['oauth_token'], resp['oauth_token_secret']
 
 
-def getUserInfo(data) -> object:
+def get_user_info(data) -> object:
     oauth_token = data.get('oauth_token')
     oauth_token_secret = data.get('oauth_token_secret')
 
