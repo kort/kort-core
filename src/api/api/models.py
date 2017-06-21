@@ -7,15 +7,10 @@ from sqlalchemy import event
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import scoped_session, sessionmaker
 from geoalchemy2 import Geometry
-
 from config.config import BaseConfig
-
 import datetime
-
-from sqlalchemy.sql.ddl import CreateSchema, DDL
-
+from sqlalchemy.sql.ddl import DDL
 from i18n import I18n
-
 from .MissionTypeLoader import MissionTypeLoader
 
 Base = declarative_base()
@@ -48,7 +43,7 @@ class User(Base):
     oauth_user_id       = Column(String, nullable=False)
     pic_url             = Column(String, nullable=True)
     token               = Column(String, nullable=True)
-    loggedIn           = Column('logged_in', Boolean, nullable=False)
+    loggedIn            = Column('logged_in', Boolean, nullable=False)
     last_login          = Column(DateTime, nullable=False)
     UniqueConstraint(oauth_provider, oauth_user_id, name='unique_oauth_user')
 
@@ -119,9 +114,9 @@ class kort_errors(Base):
         d['title'] = locale.translate(lang, d['title'])
 
         input_type = MissionTypeLoader()
-        d['inputType'] = input_type.getInputType(lang=lang, type_id=d['error_type'], input_type_name= d.pop('view_type'),
-                 re_description=d.pop('constraint_re_description'), re=d.pop('constraint_re'),
-                 lower_bound=d.pop('constraint_lower_bound'), upper_bound=d.pop('constraint_upper_bound'))
+        d['inputType'] = input_type.get_input_type(lang=lang, type_id=d['error_type'], input_type_name= d.pop('view_type'),
+                                                   re_description=d.pop('constraint_re_description'), re=d.pop('constraint_re'),
+                                                   lower_bound=d.pop('constraint_lower_bound'), upper_bound=d.pop('constraint_upper_bound'))
         return d
 
 
@@ -168,6 +163,7 @@ class Solution(Base):
         self.in_osm = False
         self.valid = valid
 
+
 class Badge(Base):
 
     __table_args__ = {'schema': 'kort'}
@@ -191,7 +187,6 @@ class Badge(Base):
         d['achievementImageURI'] = d.pop('name')
         d['achievementDescription'] = locale.translate(lang, d.pop('description'))
         return d
-
 
 
 class UserBadge(Base):
@@ -267,6 +262,7 @@ class HighscoreMonth(Base):
 
     def dump(self):
         return dict([(k, v) for k, v in vars(self).items() if not k.startswith('_')])
+
 
 class Statistics(Base):
 

@@ -1,12 +1,12 @@
-import json
 import api.models
 import traceback
-
+import logging
 from sqlalchemy import asc
-from sqlalchemy import desc
-
 
 db_session = api.models.init_db()
+
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 
 def get_achievements(user_id, lang):
@@ -32,5 +32,5 @@ def get_achievements(user_id, lang):
         return badges_achieved
 
     except Exception as e:
-        print(traceback.format_exc())
-        return '{}'
+        logger.error(traceback.format_exc())
+        return []

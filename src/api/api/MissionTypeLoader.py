@@ -1,7 +1,11 @@
 import api.models
-
+import logging
 from i18n import I18n
 import traceback
+
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
 
 class MissionTypeLoader:
 
@@ -10,7 +14,6 @@ class MissionTypeLoader:
 
     class __MissionTypeLoader:
         def __init__(self):
-            print('create')
             db_session = api.models.init_db()
             q = db_session.query(api.models.Answer).order_by(api.models.Answer.sorting)
             for p in q:
@@ -31,7 +34,7 @@ class MissionTypeLoader:
     def __getattr__(self, name):
         return getattr(self.instance, name)
 
-    def getInputType(self, lang, type_id, input_type_name, re_description, re, lower_bound, upper_bound):
+    def get_input_type(self, lang, type_id, input_type_name, re_description, re, lower_bound, upper_bound):
         try:
             locale = I18n.I18n()
             input_type = {
@@ -46,5 +49,5 @@ class MissionTypeLoader:
                 'name': locale.translate(lang, input_type_name)
             }
         except Exception as e:
-            print(traceback.format_exc())
-        return input_type;
+            logger.error(traceback.format_exc())
+        return input_type

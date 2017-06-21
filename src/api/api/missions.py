@@ -1,17 +1,11 @@
 import logging
 from connexion import NoContent
 from geoalchemy2 import WKTElement
-from sqlalchemy import Date, cast
 import osmapi
-
-import json
 import traceback
-
 import api.models
 from sqlalchemy import func
-
 import datetime
-from datetime import date
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -43,7 +37,7 @@ def get_missions(lat, lon, radius, limit, lang, user_id):
         q = db_session.query(api.models.kort_errors).select_entity_from(q).filter(q.c.row_number <= 10)
 
     except Exception as e:
-        print(traceback.format_exc())
+        logger.error(traceback.format_exc())
     return [p.dump(lang) for p in q][:limit]
 
 
@@ -88,11 +82,8 @@ def put_mission_solution(schema_id, error_id, body):
             return create_new_achievements(user_id=user_id, lang=lang, mission_type=error_type) if solved else []
         else:
             return NoContent, 404
-
-
-
     except Exception as e:
-        print(traceback.format_exc())
+        logger.error(traceback.format_exc())
         return []
 
 
@@ -219,5 +210,5 @@ def get_osm_geom(osm_type, osm_id):
                 ordered_node_list.append(way_dict.get(node_id))
             return ordered_node_list
     except Exception as e:
-        print(traceback.format_exc())
+        logger.error(traceback.format_exc())
         return []
