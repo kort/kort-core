@@ -52,38 +52,6 @@ and     not exists (
         and   f.schema = e.schema
         and   (f.complete or not f.valid));
 
-create or replace view kort.validations as
-select  f.fix_id id,
-        f.user_id fix_user_id,
-        e.osm_id,
-        e.osm_type,
-        t.description title,
-        t.type,
-        t.view_type,
-        t.vote_question question,
-        t.bug_question,
-        t.vote_koin_count,
-        f.message fixmessage,
-        f.falsepositive,
-       (select count(1) from kort.vote v where v.fix_id = f.fix_id and v.valid) upratings,
-       (select count(1) from kort.vote v where v.fix_id = f.fix_id and not v.valid) downratings,
-        t.required_votes,
-        e.latitude,
-        e.longitude,
-        e.geom,
-        e.txt1,
-        e.txt2,
-        e.txt3,
-        e.txt4,
-        e.txt5
-from    kort.all_errors e,
-        kort.error_type t,
-        kort.fix f
-where   e.error_type_id = t.error_type_id
-and     f.error_id = e.error_id
-and     f.schema = e.schema
-and     f.osm_id = e.osm_id
-and     not f.complete;
 
 create or replace view kort.all_fixes as
 select f.fix_id,
@@ -108,45 +76,12 @@ select f.fix_id,
        f.valid,
        f.in_osm,
        t.required_votes,
-       (select count(1) from kort.vote v where v.fix_id = f.fix_id and v.valid) upratings,
-       (select count(1) from kort.vote v where v.fix_id = f.fix_id and not v.valid) downratings
 from   kort.fix f
 inner join kort.user u on f.user_id = u.user_id
 inner join kort.all_errors e on e.error_id = f.error_id and e.schema = f.schema and e.osm_id = f.osm_id
 inner join kort.error_type t on e.error_type_id = t.error_type_id
 left  join kort.answer a on a.type = t.type and a.value = f.message;
 
-create or replace view kort.tracktype as
-select a.answer_id tracktype_id,
-       a.value type_key,
-       a.title,
-       a.sorting
-from   kort.answer a
-where  a.type = 'missing_track_type';
-
-create or replace view kort.language as
-select a.answer_id language_id,
-       a.value language_key,
-       a.title,
-       a.sorting
-from   kort.answer a
-where  a.type = 'language_unknown';
-
-create or replace view kort.relationtype as
-select a.answer_id relationtype_id,
-       a.value type_key,
-       a.title,
-       a.sorting
-from   kort.answer a
-where  a.type = 'relationtype';
-
-create or replace view kort.religion as
-select a.answer_id religion_id,
-       a.value type_key,
-       a.title,
-       a.sorting
-from   kort.answer a
-where  a.type = 'religion';
 
 create or replace view kort.select_answer as
 select a.answer_id id,
@@ -185,34 +120,65 @@ select t.error_type_id,
 from   kort.error_type t;
 
 
-
-
 create or replace view kort.statistics as
 select
 (select count(*) from kort.fix) fix_count,
-(select count(*) from kort.fix where falsepositive) falsepositive_fix_count,
 (select count(*) from kort.fix where complete) complete_fix_count,
 (select count(*) from kort.fix where not complete) incomplete_fix_count,
 (select count(*) from kort.fix where complete and valid) validated_fix_count,
 (select count(*) from kort.user where oauth_provider != '') user_count,
-(select count(*) from kort.user where oauth_provider = 'OpenStreetMap') osm_user_count,
-(select count(*) from kort.user where oauth_provider = 'Google') google_user_count,
-(select count(*) from kort.user where oauth_provider = 'Facebook') fb_user_count,
-(select count(*) from kort.vote) vote_count,
-(select count(*) from kort.vote where valid) valid_vote_count,
-(select count(*) from kort.vote where not valid) invalid_vote_count,
+(select count(*) from kort.user where oauth_provider = 'osm') osm_user_count,
+(select count(*) from kort.user where oauth_provider = 'google') google_user_count,
+(select count(*) from kort.user where oauth_provider = 'facebook') fb_user_count,
 (select count(*) from kort.user_badge) badge_count,
-(select count(*) from kort.user_badge where badge_id = 1) first_place_badge_count,
-(select count(*) from kort.user_badge where badge_id = 2) second_place_badge_count,
-(select count(*) from kort.user_badge where badge_id = 3) third_place_badge_count,
-(select count(*) from kort.user_badge where badge_id = 4) hundred_missions_badge_count,
-(select count(*) from kort.user_badge where badge_id = 5) fifty_missions_badge_count,
-(select count(*) from kort.user_badge where badge_id = 6) ten_missions_badge_count,
-(select count(*) from kort.user_badge where badge_id = 7) thousand_checks_badge_count,
-(select count(*) from kort.user_badge where badge_id = 8) hundred_checks_badge_count,
-(select count(*) from kort.user_badge where badge_id = 9) ten_checks_badge_count,
-(select count(*) from kort.user_badge where badge_id = 10) first_mission_badge_count,
-(select count(*) from kort.user_badge where badge_id = 11) first_check_badge_count;
+(select count(*) from kort.fix where valid and error_type='motorway_ref') solved_motorway_ref_count,
+(select count(*) from kort.fix where valid and error_type='religion') solved_religion_count,
+(select count(*) from kort.fix where valid and error_type='poi_name') solved_poi_name_count,
+(select count(*) from kort.fix where valid and error_type='missing_maxspeed') solved_missing_maxspeed_count,
+(select count(*) from kort.fix where valid and error_type='language_unknown') solved_language_unknown_count,
+(select count(*) from kort.fix where valid and error_type='missing_track_type') solved_missing_track_type_count,
+(select count(*) from kort.fix where valid and error_type='way_wo_tags') solved_way_wo_tags_count,
+(select count(*) from kort.fix where valid and error_type='missing_cuisine') solvedmissing_cuisine_count,
+(select count(*) from kort.fix where valid and error_type='opening_hours') solved_opening_hours_count,
+(select count(*) from kort.fix where valid and error_type='missing_level') solved_missing_level_count,
+(select count(*) from kort.user_badge where badge_id = 1) highscore_place_1_count,
+(select count(*) from kort.user_badge where badge_id = 2) highscore_place_2_count,
+(select count(*) from kort.user_badge where badge_id = 3) highscore_place_3_count,
+(select count(*) from kort.user_badge where badge_id = 4) total_fix_count_100_count,
+(select count(*) from kort.user_badge where badge_id = 5) total_fix_count_50_count,
+(select count(*) from kort.user_badge where badge_id = 6) total_fix_count_10_count,
+(select count(*) from kort.user_badge where badge_id = 7) total_fix_count_1_count,
+(select count(*) from kort.user_badge where badge_id = 8) fix_count_motorway_ref_100_count,
+(select count(*) from kort.user_badge where badge_id = 9) fix_count_motorway_ref_50_count,
+(select count(*) from kort.user_badge where badge_id = 10) fix_count_motorway_ref_5_count,
+(select count(*) from kort.user_badge where badge_id = 11) fix_count_religion_100_count,
+(select count(*) from kort.user_badge where badge_id = 12) fix_count_religion_50_count,
+(select count(*) from kort.user_badge where badge_id = 13) fix_count_religion_5_count,
+(select count(*) from kort.user_badge where badge_id = 14) fix_count_poi_name_100_count,
+(select count(*) from kort.user_badge where badge_id = 15) fix_count_poi_name_50_count,
+(select count(*) from kort.user_badge where badge_id = 16) fix_count_poi_name_5_count,
+(select count(*) from kort.user_badge where badge_id = 17) fix_count_missing_maxspeed_100_count,
+(select count(*) from kort.user_badge where badge_id = 18) fix_count_missing_maxspeed_50_count,
+(select count(*) from kort.user_badge where badge_id = 19) fix_count_missing_maxspeed_5_count,
+(select count(*) from kort.user_badge where badge_id = 20) fix_count_language_unknown_100_count,
+(select count(*) from kort.user_badge where badge_id = 21) fix_count_language_unknown_50_count,
+(select count(*) from kort.user_badge where badge_id = 22) fix_count_language_unknown_5_count,
+(select count(*) from kort.user_badge where badge_id = 23) fix_count_missing_track_type_100_count,
+(select count(*) from kort.user_badge where badge_id = 24) fix_count_missing_track_type_50_count,
+(select count(*) from kort.user_badge where badge_id = 25) fix_count_missing_track_type_5_count,
+(select count(*) from kort.user_badge where badge_id = 26) fix_count_way_wo_tags_100_count,
+(select count(*) from kort.user_badge where badge_id = 27) fix_count_way_wo_tags_50_count,
+(select count(*) from kort.user_badge where badge_id = 28) fix_count_way_wo_tags_5_count,
+(select count(*) from kort.user_badge where badge_id = 29) fix_count_missing_cuisine_100_count,
+(select count(*) from kort.user_badge where badge_id = 30) fix_count_missing_cuisine_50_count,
+(select count(*) from kort.user_badge where badge_id = 31) fix_count_missing_cuisine_5_count,
+(select count(*) from kort.user_badge where badge_id = 32) fix_count_missing_level_100_count,
+(select count(*) from kort.user_badge where badge_id = 33) fix_count_missing_level_50_count,
+(select count(*) from kort.user_badge where badge_id = 34) fix_count_missing_level_5_count,
+(select count(*) from kort.user_badge where badge_id = 35) fix_count_opening_hours_100_count,
+(select count(*) from kort.user_badge where badge_id = 36) fix_count_opening_hours_50_count,
+(select count(*) from kort.user_badge where badge_id = 37) fix_count_opening_hours_5_count,
+(select count(*) from kort.user_badge where badge_id = 38) six_per_day_count;
 
 CREATE OR REPLACE VIEW kort.highscore_day AS
 SELECT
