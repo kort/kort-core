@@ -14,7 +14,7 @@ paths:
     get:
       tags: [User]
       operationId: api.users.get_user
-      summary: Get a single user
+      summary: get user information
       parameters:
         - $ref: '#/parameters/user_id'
           required: true
@@ -25,13 +25,13 @@ paths:
           type: string
       responses:
         200:
-          description: Return User
+          description: return user
           schema:
             $ref: '#/definitions/User'
         401:
-          description: Unauthorized
+          description: unauthorized
         404:
-          description: User does not exist
+          description: user does not exist
 
   /missions:
     get:
@@ -91,7 +91,7 @@ paths:
           description: submit a mission solution
       responses:
         200:
-          description: Returns newly aquired achievements
+          description: returns newly aquired achievements
           schema:
             type: array
             items:
@@ -128,10 +128,11 @@ paths:
           in: query
           type: integer
           minimum: 1
+          maximum: 100
           default: 10
       responses:
         200:
-          description: Returns highscore
+          description: returns the highscore
           schema:
             type: array
             items:
@@ -154,7 +155,7 @@ paths:
           default: 'en'
       responses:
         200:
-          description: Returns newly aquired achievements if any
+          description: returns newly aquired achievements if any
           schema:
             type: array
             items:
@@ -175,8 +176,7 @@ parameters:
     name: user_id
     description: unique user id
     in: path
-    type: string
-    pattern: "^[0-9]+$"
+    type: integer
   schema_id:
     name: schema_id
     description: schema id
@@ -206,7 +206,6 @@ parameters:
     type: integer
 
 
-
 definitions:
   User:
     type: object
@@ -226,19 +225,25 @@ definitions:
     properties:
       id:
         type: integer
-        description: Unique identifier
+        description: unique identifier
         example: 12
         readOnly: true
       name:
         type: string
-        description: User's full name
-        example: "user"
+        description: user's full name
+        example: "user's name"
         minLength: 1
         maxLength: 100
       username:
         type: string
-        description: User's full name
-        example: "user"
+        description: the username used
+        example: "username"
+        minLength: 1
+        maxLength: 100
+      email:
+        type: string
+        description: the user's email if any
+        example: "user@kort.ch"
         minLength: 1
         maxLength: 100
       mission_count:
@@ -251,7 +256,8 @@ definitions:
         example: 2
       koin_count:
         type: integer
-        description: how many koins the user has
+        description: how many koins the user has obtained
+        example: 825
       oauth_provider:
         type: string
         description: oauth provider
@@ -259,7 +265,7 @@ definitions:
       oauth_user_id:
         type: string
         description: oauth user id
-        example: "none"
+        example: "htksduwe23js"
       pic_url:
         type: string
         description: url to avatar picture
@@ -271,7 +277,7 @@ definitions:
       token:
         type: string
         description: token from oauth
-        example: "kuqwelkjh"
+        example: "FAF923jdsdDOaOs"
       logged_in:
         type: boolean
         description: whether the user is logged in
@@ -327,14 +333,14 @@ definitions:
       koinReward:
         type: integer
         description: number of koins as reward
-        example: 1
+        example: 5
       koinRewardWhenComplete:
         type: integer
-        description: number of koins when answer is complete
-        example: 1
+        description: number of koins when other answers are the same
+        example: 10
       image:
         type: string
-        description: the image file for the annotation either as URL or local filename for app
+        description: the image file for the annotation either as URL or local filename in app
         example: "mission_floors"
       inputType:
         type: object
