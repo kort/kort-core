@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-
+import logging
 from sqlalchemy import Column, DateTime, String, Integer, BigInteger, Boolean, create_engine, UniqueConstraint, Numeric
 from sqlalchemy import ForeignKey
 from sqlalchemy import PrimaryKeyConstraint
@@ -19,6 +19,9 @@ from i18n import I18n
 from .MissionTypeLoader import MissionTypeLoader
 
 Base = declarative_base()
+
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 
 def init_db():
@@ -181,7 +184,6 @@ class Badge(Base):
         d = dict([(k, v) for k, v in vars(self).items() if not k.startswith('_')])
         locale = I18n.I18n()
         lang = locale.matchLanguage(language)
-
         d['achievementDate'] = achievementDate.strftime("%d/%m/%y") if achievementDate else None
         d['achievementTitle'] = locale.translate(lang, d.pop('title'))
         d['achieved'] = achieved

@@ -1,3 +1,4 @@
+import logging
 from connexion import NoContent
 from geoalchemy2 import WKTElement
 from sqlalchemy import Date, cast
@@ -11,6 +12,9 @@ from sqlalchemy import func
 
 import datetime
 from datetime import date
+
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 db_session = api.models.init_db()
 
@@ -43,7 +47,7 @@ def get_missions(lat, lon, radius, limit, lang, user_id):
     return [p.dump(lang) for p in q][:limit]
 
 
-def put_mission_solution(schema_id, error_id, lang, body):
+def put_mission_solution(schema_id, error_id, body):
 
     try:
         q = db_session.query(api.models.kort_errors).filter(api.models.kort_errors.errorId == error_id).filter(
@@ -57,6 +61,7 @@ def put_mission_solution(schema_id, error_id, lang, body):
         koins = s['koins']
         answer = s['value']
         solved = s['solved']
+        lang = s['lang']
         if s['option']:
             answer = s['option']
 
@@ -80,7 +85,7 @@ def put_mission_solution(schema_id, error_id, lang, body):
             db_session.commit()
 
             # get new badges for this user if solved
-            return create_new_achievements(user_id=user_id, solution=s, lang=lang, mission_type=error_type) if solved else []
+            return create_new_achievements(user_id=user_id, lang=lang, mission_type=error_type) if solved else []
         else:
             return NoContent, 404
 
@@ -88,10 +93,10 @@ def put_mission_solution(schema_id, error_id, lang, body):
 
     except Exception as e:
         print(traceback.format_exc())
-        return '{}'
+        return []
 
 
-def create_new_achievements(user_id, solution, lang, mission_type):
+def create_new_achievements(user_id, lang, mission_type):
     all_new_badges = []
     # get user badges
     user_badge_ids = db_session.query(api.models.UserBadge.badge_id).filter(api.models.UserBadge.user_id == user_id)
@@ -126,7 +131,7 @@ def create_new_achievements(user_id, solution, lang, mission_type):
             get_not_achieved_badges_highscore(user_badge_ids=user_badge_ids, rank=rank))
 
     for row in all_new_badges:
-        print(row.title)
+        logger.debug('new achievement '+row.title)
 
     # insert badges
     badgesAchieved = []
@@ -134,7 +139,7 @@ def create_new_achievements(user_id, solution, lang, mission_type):
         db_session.add(
             api.models.UserBadge(user_id=user_id, badge_id=badge.id, create_date=datetime.datetime.utcnow())
         )
-        badgesAchieved.append(badge.dump(lang, True, datetime.datetime.utcnow()))
+        badgesAchieved.append(badge.dump(language=lang,  achieved=True, achievementDate=datetime.datetime.utcnow()))
 
     db_session.commit()
 
