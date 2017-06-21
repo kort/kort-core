@@ -288,7 +288,7 @@ class Statistics(Base):
     solved_language_unknown_count		    = Column (Integer, primary_key=False)
     solved_missing_track_type_count		    = Column (Integer, primary_key=False)
     solved_way_wo_tags_count			    = Column (Integer, primary_key=False)
-    solvedmissing_cuisine_count			    = Column (Integer, primary_key=False)
+    solved_missing_cuisine_count			= Column (Integer, primary_key=False)
     solved_opening_hours_count			    = Column (Integer, primary_key=False)
     solved_missing_level_count			    = Column (Integer, primary_key=False)
     highscore_place_1_count				    = Column (Integer, primary_key=False)

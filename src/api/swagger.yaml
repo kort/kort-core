@@ -496,7 +496,7 @@ definitions:
       solved_way_wo_tags_count:
         type: integer
         description: self-explanatory
-      solvedmissing_cuisine_count:
+      solved_missing_cuisine_count:
         type: integer
         description: self-explanatory
       solved_opening_hours_count:
