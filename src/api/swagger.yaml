@@ -160,7 +160,16 @@ paths:
             items:
               $ref: '#/definitions/Achievement'
 
-
+  /statistics:
+    get:
+      tags: [Statistics]
+      operationId: api.statistics.get_statistics
+      summary: returns the statistics
+      responses:
+        200:
+          description: return the current statistics
+          schema:
+            $ref: '#/definitions/Statistics'
 parameters:
   user_id:
     name: user_id
@@ -195,6 +204,7 @@ parameters:
     description: the osm id
     in: path
     type: integer
+
 
 
 definitions:
@@ -356,7 +366,6 @@ definitions:
                 type: string
                 description: the regular expression in place
 
-
   missionSolution:
     type: object
     properties:
@@ -432,3 +441,181 @@ definitions:
       koin_count:
         type: integer
         description: how many koins this user has earned
+
+  Statistics:
+    type: object
+    properties:
+      id:
+        type: integer
+        description: id
+      fix_count:
+        type: integer
+        description: self-explanatory
+      complete_fix_count:
+        type: integer
+        description: self-explanatory
+      incomplete_fix_count:
+        type: integer
+        description: self-explanatory
+      validated_fix_count:
+        type: integer
+        description: self-explanatory
+      user_count:
+        type: integer
+        description: self-explanatory
+      osm_user_count:
+        type: integer
+        description: self-explanatory
+      google_user_count:
+        type: integer
+        description: self-explanatory
+      fb_user_count:
+        type: integer
+        description: self-explanatory
+      badge_count:
+        type: integer
+        description: self-explanatory
+      solved_motorway_ref_count:
+        type: integer
+        description: self-explanatory
+      solved_religion_count:
+        type: integer
+        description: self-explanatory
+      solved_poi_name_count:
+        type: integer
+        description: self-explanatory
+      solved_missing_maxspeed_count:
+        type: integer
+        description: self-explanatory
+      solved_language_unknown_count:
+        type: integer
+        description: self-explanatory
+      solved_missing_track_type_count:
+        type: integer
+        description: self-explanatory
+      solved_way_wo_tags_count:
+        type: integer
+        description: self-explanatory
+      solvedmissing_cuisine_count:
+        type: integer
+        description: self-explanatory
+      solved_opening_hours_count:
+        type: integer
+        description: self-explanatory
+      solved_missing_level_count:
+        type: integer
+        description: self-explanatory
+      highscore_place_1_count:
+        type: integer
+        description: self-explanatory
+      highscore_place_2_count:
+        type: integer
+        description: self-explanatory
+      highscore_place_3_count:
+        type: integer
+        description: self-explanatory
+      total_fix_count_100_count:
+        type: integer
+        description: self-explanatory
+      total_fix_count_50_count:
+        type: integer
+        description: self-explanatory
+      total_fix_count_10_count:
+        type: integer
+        description: self-explanatory
+      total_fix_count_1_count:
+        type: integer
+        description: self-explanatory
+      fix_count_motorway_ref_100_count:
+        type: integer
+        description: self-explanatory
+      fix_count_motorway_ref_50_count:
+        type: integer
+        description: self-explanatory
+      fix_count_motorway_ref_5_count:
+        type: integer
+        description: self-explanatory
+      fix_count_religion_100_count:
+        type: integer
+        description: self-explanatory
+      fix_count_religion_50_count:
+        type: integer
+        description: self-explanatory
+      fix_count_religion_5_count:
+        type: integer
+        description: self-explanatory
+      fix_count_poi_name_100_count:
+        type: integer
+        description: self-explanatory
+      fix_count_poi_name_50_count:
+        type: integer
+        description: self-explanatory
+      fix_count_poi_name_5_count:
+        type: integer
+        description: self-explanatory
+      fix_count_missing_maxspeed_100_count:
+        type: integer
+        description: self-explanatory
+      fix_count_missing_maxspeed_50_count:
+        type: integer
+        description: self-explanatory
+      fix_count_missing_maxspeed_5_count:
+        type: integer
+        description: self-explanatory
+      fix_count_language_unknown_100_count:
+        type: integer
+        description: self-explanatory
+      fix_count_language_unknown_50_count:
+        type: integer
+        description: self-explanatory
+      fix_count_language_unknown_5_count:
+        type: integer
+        description: self-explanatory
+      fix_count_missing_track_type_100_count:
+        type: integer
+        description: self-explanatory
+      fix_count_missing_track_type_50_count:
+        type: integer
+        description: self-explanatory
+      fix_count_missing_track_type_5_count:
+        type: integer
+        description: self-explanatory
+      fix_count_way_wo_tags_100_count:
+        type: integer
+        description: self-explanatory
+      fix_count_way_wo_tags_50_count:
+        type: integer
+        description: self-explanatory
+      fix_count_way_wo_tags_5_count:
+        type: integer
+        description: self-explanatory
+      fix_count_missing_cuisine_100_count:
+        type: integer
+        description: self-explanatory
+      fix_count_missing_cuisine_50_count:
+        type: integer
+        description: self-explanatory
+      fix_count_missing_cuisine_5_count:
+        type: integer
+        description: self-explanatory
+      fix_count_missing_level_100_count:
+        type: integer
+        description: self-explanatory
+      fix_count_missing_level_50_count:
+        type: integer
+        description: self-explanatory
+      fix_count_missing_level_5_count:
+        type: integer
+        description: self-explanatory
+      fix_count_opening_hours_100_count:
+        type: integer
+        description: self-explanatory
+      fix_count_opening_hours_50_count:
+        type: integer
+        description: self-explanatory
+      fix_count_opening_hours_5_count:
+        type: integer
+        description: self-explanatory
+      six_per_day_count:
+        type: integer
+        description: self-explanatory
