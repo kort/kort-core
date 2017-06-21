@@ -77,7 +77,7 @@ paths:
     post:
       tags: [Mission]
       operationId: api.missions.put_mission_solution
-      summary: mission description
+      summary: submit solution to missions
       parameters:
         - $ref: '#/parameters/schema_id'
         - $ref: '#/parameters/error_id'
