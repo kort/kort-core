@@ -103,14 +103,14 @@ class kort_errors(Base):
     def dump(self, language):
         d = dict([(k, v) for k, v in vars(self).items() if not k.startswith('_') and not k == 'geom'])
         locale = I18n.I18n()
-        lang = locale.matchLanguage(language)
+        lang = locale.match_language(language)
         d['id'] = 's'+d['schema']+'id'+str(d['errorId'])
         d['annotationCoordinate'] = [float(d.pop('latitude')), float(d.pop('longitude'))]
         d['geomType'] = 'point' if d['osmType'] == 'node' else 'line'
         d['koinReward'] = d.pop('fix_koin_count')
         d['koinRewardWhenComplete'] = d.pop('vote_koin_count')
 
-        d['question'] = locale.translateQuestion(lang, d['question'], d.pop('txt1'), d.pop('txt2'), d.pop('txt3'), d.pop('txt4'), d.pop('txt5'))
+        d['question'] = locale.translate_question(lang, d['question'], d.pop('txt1'), d.pop('txt2'), d.pop('txt3'), d.pop('txt4'), d.pop('txt5'))
         d['title'] = locale.translate(lang, d['title'])
 
         input_type = MissionTypeLoader()
@@ -179,7 +179,7 @@ class Badge(Base):
     def dump(self, language, achieved, achievementDate):
         d = dict([(k, v) for k, v in vars(self).items() if not k.startswith('_')])
         locale = I18n.I18n()
-        lang = locale.matchLanguage(language)
+        lang = locale.match_language(language)
         d['achievementDate'] = achievementDate.strftime("%d/%m/%y") if achievementDate else None
         d['achievementTitle'] = locale.translate(lang, d.pop('title'))
         d['achieved'] = achieved

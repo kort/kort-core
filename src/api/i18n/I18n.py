@@ -2,6 +2,7 @@ import jprops
 import os
 import re
 
+
 class I18n:
 
     languages = {}
@@ -9,10 +10,10 @@ class I18n:
 
     class __I18n:
         def __init__(self):
-            dir = os.path.join(os.path.dirname(__file__),'..','res','i18n')
+            work_dir = os.path.join(os.path.dirname(__file__), '..', 'res', 'i18n')
             for lang in I18n.supportedLanguages:
                 file = 'KortDB_'+lang+'.props'
-                with open(os.path.join(dir, file)) as fp:
+                with open(os.path.join(work_dir, file)) as fp:
                     props = jprops.load_properties(fp)
                     I18n.languages[lang] = props
 
@@ -24,25 +25,23 @@ class I18n:
     def __init__(self):
         if not I18n.instance:
             I18n.instance = I18n.__I18n()
+
     def __getattr__(self, name):
         return getattr(self.instance, name)
 
-
-    def matchLanguage(self, lang):
-        if (lang in I18n.supportedLanguages):
+    def match_language(self, lang):
+        if lang in I18n.supportedLanguages:
             return lang
         else:
             part = lang.split('-')[0]
-            if (part in I18n.supportedLanguages):
+            if part in I18n.supportedLanguages:
                 return part
         return 'en'
 
-
-    def translateList(self, lang, list):
-        for index, item in enumerate(list):
-            list[index] = self.translate(lang, list[index])
-        return list
-
+    def translate_list(self, lang, list_of_values):
+        for index, item in enumerate(list_of_values):
+            list_of_values[index] = self.translate(lang, list_of_values[index])
+        return list_of_values
 
     def translate(self, lang, key):
         try:
@@ -51,7 +50,7 @@ class I18n:
         except KeyError:
             return key
 
-    def translateQuestion(self, lang, question, txt1, txt2, txt3, txt4, txt5):
+    def translate_question(self, lang, question, txt1, txt2, txt3, txt4, txt5):
         translated_question = self.translate(lang, question)
         if not txt1 and '$1' not in translated_question:
             return translated_question
@@ -62,7 +61,6 @@ class I18n:
             rep = dict((re.escape(k), v) for k, v in rep.items())
             pattern = re.compile("|".join(rep.keys()))
             return pattern.sub(lambda m: rep[re.escape(m.group(0))], translated_question)
-
 
     def translate_place(self, lang, place):
         name = self.translate(lang, place)
