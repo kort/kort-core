@@ -50,8 +50,6 @@ def put_mission_solution(schema_id, error_id, body):
         q = db_session.query(api.models.kort_errors).filter(api.models.kort_errors.errorId == error_id).filter(
             api.models.kort_errors.schema == schema_id)
 
-        # 403 if user does not exist
-        # TODO check if valid according to re,
         s = body['solution']
 
         user_id = s['userId']
