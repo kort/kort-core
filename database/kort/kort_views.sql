@@ -75,7 +75,7 @@ select f.fix_id,
        f.complete,
        f.valid,
        f.in_osm,
-       t.required_votes,
+       t.required_votes
 from   kort.fix f
 inner join kort.user u on f.user_id = u.user_id
 inner join kort.all_errors e on e.error_id = f.error_id and e.schema = f.schema and e.osm_id = f.osm_id

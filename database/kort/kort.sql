@@ -21,23 +21,6 @@ create table kort.error_type (
     unique(type)
 );
 
-create table kort.fix (
-    fix_id integer primary key default nextval('kort.fix_id'),
-    user_id integer,
-    create_date timestamp not null default now(),
-    error_id bigint not null,
-    error_type character varying(20) not null,
-    fix_koin_count integer not null,
-    schema character varying(50) not null,
-    osm_id bigint not null,
-    message text,
-    falsepositive boolean not null default false,
-    complete boolean not null default false,
-    valid boolean,
-    in_osm boolean not null default false,
-    constraint complete_validity CHECK ((complete and valid is not null) or not complete)
-);
-
 create table kort.user (
     user_id integer primary key default nextval('kort.user_id'),
     name varchar(100) not null,
@@ -51,6 +34,23 @@ create table kort.user (
     pic_url varchar(255),
     secret varchar(100) unique,
     unique(oauth_provider, oauth_user_id)
+);
+
+create table kort.fix (
+    fix_id integer primary key default nextval('kort.fix_id'),
+    user_id integer REFERENCES kort.user,
+    create_date timestamp not null default now(),
+    error_id bigint not null,
+    error_type character varying(20) not null,
+    fix_koin_count integer not null,
+    schema character varying(50) not null,
+    osm_id bigint not null,
+    message text,
+    falsepositive boolean not null default false,
+    complete boolean not null default false,
+    valid boolean,
+    in_osm boolean not null default false,
+    constraint complete_validity CHECK ((complete and valid is not null) or not complete)
 );
 
 create table kort.badge (
@@ -130,5 +130,5 @@ END
 $$ LANGUAGE plpgsql;
 
 
-CREATE OR REPLACE TRIGGER trigger_check_if_answer_is_valid_and_update_koin_counts AFTER INSERT OR UPDATE ON kort.fix
+CREATE TRIGGER trigger_check_if_answer_is_valid_and_update_koin_counts AFTER INSERT OR UPDATE ON kort.fix
 for each row execute procedure check_if_answer_is_valid_and_update_koin_counts();
