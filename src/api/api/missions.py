@@ -7,6 +7,8 @@ import api.models
 from sqlalchemy import func
 import datetime
 
+from sqlalchemy import tuple_
+
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
@@ -16,25 +18,26 @@ db_session = api.models.init_db()
 def get_missions(lat, lon, radius, limit, lang, user_id):
     try:
         location = WKTElement('POINT('+str(lon)+' '+str(lat)+')', srid=4326)
+        no_of_errors = 10
 
+        # get already solved error ids
         already_solved = db_session.query(api.models.Solution.error_id). \
             filter(api.models.Solution.user_id == user_id)
 
-        subquery = db_session.query(api.models.kort_errors) \
+        # get nearest neighbors candidates from location
+        q = db_session.query(api.models.kort_errors.schema, api.models.kort_errors.errorId) \
             .filter((~api.models.kort_errors.errorId.in_(already_solved))) \
             .order_by(api.models.kort_errors.geom.distance_centroid(location)) \
-            .limit(1000).subquery()
+            .limit(limit*no_of_errors).subquery()
 
-        q = db_session.query(subquery.c.id)\
-            .filter(func.ST_DistanceSphere(subquery.c.geom, location) < radius)
-
-        q = db_session.query(api.models.kort_errors).filter(api.models.kort_errors.errorId.in_(q)).subquery()
-
+        # partition by error type
         q = db_session.query(api.models.kort_errors, func.row_number().over(
                 partition_by=api.models.kort_errors.error_type).label("row_number")) \
-            .select_entity_from(q).subquery()
+            .filter(tuple_(api.models.kort_errors.schema,api.models.kort_errors.errorId).in_(q))\
+            .filter(func.ST_DistanceSphere(api.models.kort_errors.geom, location) < radius).subquery()
 
-        q = db_session.query(api.models.kort_errors).select_entity_from(q).filter(q.c.row_number <= 10)
+        # set max errors of each type
+        q = db_session.query(api.models.kort_errors).select_entity_from(q).filter(q.c.row_number <= limit/no_of_errors)
 
     except Exception as e:
         logger.error(traceback.format_exc())
