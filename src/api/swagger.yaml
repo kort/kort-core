@@ -322,41 +322,42 @@ definitions:
     properties:
       id:
         type: string
-        description: id
-        example: 12
+        description: id consisting of the schema id and the error id
+        example: "s95id59805085"
         readOnly: true
       osmId:
         type: number
         description: "The unique OSM id"
       osmType:
         type: string
-      type:
+        enum:
+          - node
+          - way
+          - relation
+      error_type:
         type: string
         description: mission type
-        example: "mission_building_floors"
+        example: "missing_track_type"
       title:
         type: string
         description: mission title for display
-        example: "Missing Building Floors"
+        example: "Type of track unknown"
       question:
         type: string
         description: question
-        example: "How many floors has this building?"
+        example: "What kind of track is this?"
       geomType:
         type: string
         description: geometry type
-        example: "point"
+        enum:
+          - point
+          - line
+        example: "line"
       annotationCoordinate:
         type: array
         items:
           type: number
         description: lat/lon array of annotation
-        example: [46.817812, 9.852413]
-      coordinates:
-        type: array
-        items:
-          type: number
-        description: lat/lon array of geometry
         example: [46.817812, 9.852413]
       koinReward:
         type: integer
@@ -369,20 +370,24 @@ definitions:
       image:
         type: string
         description: the image file for the annotation either as URL or local filename in app
-        example: "mission_floors"
+        example: "mission_road"
       inputType:
         type: object
         properties:
           name:
             type: string
-            description: name of the input type (number|select|text)
-            example: "number"
+            description: name of the input type
+            enum:
+              - number
+              - select
+              - text
+            example: "select"
           options:
             type: array
             items:
               type: string
             description: the selection to choose from
-            example: [ "Italian", "Chinese", "Italian", "Swiss", "Thai" ]
+            example: [ "Asphalt, concrete or cobblestone", "Gravel road", "Mixture of hard and soft materials", "Soil, sand or grass", "Unpaved track" ]
           values:
             type: array
             items:
@@ -399,6 +404,14 @@ definitions:
               re:
                 type: string
                 description: the regular expression in place
+              lowerBound:
+                type: integer
+                description: the lower bound if any
+                example: 1
+              upperBound:
+                type: integer
+                description: the upper bound if any
+                example: 100
 
   missionSolution:
     type: object
