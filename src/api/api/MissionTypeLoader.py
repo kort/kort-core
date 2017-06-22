@@ -45,7 +45,7 @@ class MissionTypeLoader:
                     'upperBound': upper_bound or ''
                 },
                 'options': locale.translate_list(lang, self.options.get(type_id, [])),
-                'values': locale.translate_list(lang, self.values.get(type_id, [])),
+                'values': self.values.get(type_id, []),
                 'name': locale.translate(lang, input_type_name)
             }
         except Exception as e:
