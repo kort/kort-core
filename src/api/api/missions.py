@@ -33,7 +33,7 @@ def get_missions(lat, lon, radius, limit, lang, user_id):
         # partition by error type
         q = db_session.query(api.models.kort_errors, func.row_number().over(
                 partition_by=api.models.kort_errors.error_type).label("row_number")) \
-            .filter(tuple_(api.models.kort_errors.schema,api.models.kort_errors.errorId).in_(q))\
+            .filter(tuple_(api.models.kort_errors.schema, api.models.kort_errors.errorId).in_(q))\
             .filter(func.ST_DistanceSphere(api.models.kort_errors.geom, location) < radius).subquery()
 
         # set max errors of each type
