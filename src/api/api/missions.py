@@ -8,6 +8,7 @@ from sqlalchemy import func
 import datetime
 
 from sqlalchemy import tuple_
+from sqlalchemy.exc import SQLAlchemyError
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -83,9 +84,10 @@ def put_mission_solution(schema_id, error_id, body):
             return create_new_achievements(user_id=user_id, lang=lang, mission_type=error_type) if solved else []
         else:
             return NoContent, 404
-    except Exception as e:
+    except SQLAlchemyError as e:
         logger.error(traceback.format_exc())
-        return []
+        db_session.rollback()
+        return NoContent, 404
 
 
 def create_new_achievements(user_id, lang, mission_type):
