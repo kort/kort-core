@@ -28,6 +28,7 @@ class osm_error(Base):
 
     __table_args__ = {'schema': 'osm_errors'}
     __tablename__ = 'errors'
+
     schema                  = Column(String, primary_key=True, default='100')
     id                      = Column('error_id', Integer, primary_key=True, autoincrement=True)
     error_type_id           = Column(Integer, primary_key=False)
@@ -38,10 +39,10 @@ class osm_error(Base):
     lat                     = Column(Numeric, primary_key=False)
     lon                     = Column(Numeric, primary_key=False)
     msgid                   = Column(String, primary_key=False)
-    txt1                   = Column(String, primary_key=False)
-    txt2                   = Column(String, primary_key=False)
-    txt3                   = Column(String, primary_key=False)
-    txt4                   = Column(String, primary_key=False)
-    txt5                   = Column(String, primary_key=False)
+    txt1                    = Column(String, primary_key=False)
+    txt2                    = Column(String, primary_key=False)
+    txt3                    = Column(String, primary_key=False)
+    txt4                    = Column(String, primary_key=False)
+    txt5                    = Column(String, primary_key=False)
     UniqueConstraint(schema, id, name='unique_schema_id')
     UniqueConstraint(error_type_id, object_type, object_id, name='unique_errorType_osmType_osmId')
