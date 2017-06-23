@@ -101,7 +101,7 @@ if __name__ == '__main__':
         bbox = tuple(map(float, os.getenv('BBOX_OVERPASS').split(',')))
 
     increment_lat = 0.1
-    increment_lon = 0.2
+    increment_lon = 0.1
 
     lat = bbox[0]
     lon = bbox[1]
