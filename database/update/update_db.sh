@@ -3,21 +3,17 @@ DIR="/docker-entrypoint-initdb.d/update"
 DB_NAME="osm_bugs"
 DB_OWNER="postgres"
 
-while getopts ":o:n:s:dcmp:" opt; do
-    case $opt in
-        o)
-            DB_OWNER="$OPTARG"
-            ;;
-        n)
-            DB_NAME="$OPTARG"
-            ;;
-        \?) # fall-through
-            ;;
-        :)
-            echo "USAGE: `basename $0` [-o <db owner>] [-n <database name>]" >&2
-            exit 1
-            ;;
-    esac
+while getopts "ok" arg; do
+  case $arg in
+    o)
+        echo "skip overpass"
+        SKIP_OVERPASS="true"
+      ;;
+    k)
+        echo "skip keepright"
+        SKIP_KEEPRIGHT="true"
+      ;;
+  esac
 done
 
 if [ -z $DB_NAME ] ; then
@@ -41,22 +37,31 @@ echo "do update"
 ###Update error sources###
 echo "update error sources..."
 
-###Keepright reletaded###
-echo "start keepright related update"
-$DIR/../01_setup_keepright_db.sh -d -o $DB_OWNER
-# add geometry to table
-echo "Add geometry column to keepright.errors"
-psql -d $DB_NAME -c "select AddGeometryColumn ('keepright','errors','geom', 4326,'POINT',2);"
 
-# update table
-echo "Generate geometry objects based on lat/lng values"
-psql -d $DB_NAME -c "update keepright.errors set geom = ST_SetSRID(ST_Point(lon/10000000.0,lat/10000000.0),4326);"
-echo "keepright related update ended"
+if [[ $SKIP_KEEPRIGHT ]] ; then
+    echo "skip keepright update"
+else
+    ###Keepright reletaded###
+    echo "start keepright related update"
+    $DIR/../01_setup_keepright_db.sh -d -o $DB_OWNER
+    # add geometry to table
+    echo "Add geometry column to keepright.errors"
+    psql -d $DB_NAME -c "select AddGeometryColumn ('keepright','errors','geom', 4326,'POINT',2);"
 
-###osm_errors reletaded###
-echo "start osm_errors related update"
-$DIR/../03_setup_osm_errors_db.sh -d -o $DB_OWNER -n $DB_NAME -s osm_errors
-echo "osm_errors related update ended"
+    # update table
+    echo "Generate geometry objects based on lat/lng values"
+    psql -d $DB_NAME -c "update keepright.errors set geom = ST_SetSRID(ST_Point(lon/10000000.0,lat/10000000.0),4326);"
+    echo "keepright related update ended"
+fi
+
+if [[ $SKIP_OVERPASS ]] ; then
+    echo "skip overpass update"
+else
+    ###osm_errors reletaded###
+    echo "start osm_errors related update"
+    $DIR/../03_setup_osm_errors_db.sh -d -o $DB_OWNER -n $DB_NAME -s osm_errors
+    echo "osm_errors related update ended"
+fi
 
 ### consolidate error sources and build indexes###
 echo "consolidate error sources..."
