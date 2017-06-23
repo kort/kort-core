@@ -82,7 +82,7 @@ if [ -z $MINIMAL_SETUP ] ; then
     else
         cp $PREVIOUS_DOWNLOAD /tmp/keepright_errors.txt
     fi
-    
+
     echo "Splitting CSV in parts..."
     split -l 200000 /tmp/keepright_errors.txt /tmp/kr_part
     sed 1d /tmp/kr_partaa > /tmp/kr_partaa_wo && mv /tmp/kr_partaa_wo /tmp/kr_partaa
@@ -96,7 +96,7 @@ if [ -z $MINIMAL_SETUP ] ; then
         psql -d $DB_NAME -c "copy $DB_SCHEMA.errors from '$part_file';" || echo "error in data file '$part_file'"
     done
     echo "End."
-    
+
     # echo "Combining part files to reduced keepright dump /tmp/keepright_errors.txt"
     # cat /tmp/kr_part* >> /tmp/keepright_errors.txt
 

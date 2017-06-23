@@ -54,7 +54,7 @@ DB_SCHEMA="osm_errors"
 
 
 # Load osm_errors data
-# echo "Load OSM errors from Overpass API"
+echo "Load OSM errors from Overpass API"
 python3.4 $DIR/mission_creator/main.py
 
 echo "Creating indexes"

@@ -41,6 +41,10 @@ COPY update/* /docker-entrypoint-initdb.d/update/
 
 COPY mission_creator/* /docker-entrypoint-initdb.d/mission_creator/
 
+# create overpass log file for user postgres
+RUN touch /docker-entrypoint-initdb.d/mission_creator/overpass.log
+RUN chown -R postgres:postgres /docker-entrypoint-initdb.d/mission_creator/overpass.log
+
 # install python dependencies for mission creator
 ADD https://raw.githubusercontent.com/pypa/pip/701a80f451a62aadf4eeb21f371b45424821582b/contrib/get-pip.py /root/get-pip.py
 RUN python3.4 /root/get-pip.py

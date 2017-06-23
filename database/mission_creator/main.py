@@ -16,11 +16,11 @@ import overpass_queries
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
-# handler = logging.FileHandler(os.path.join(os.path.dirname(__file__),'overpass.log'))
-# handler.setLevel(logging.INFO)
-# formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-# handler.setFormatter(formatter)
-# logger.addHandler(handler)
+handler = logging.FileHandler(os.path.join(os.path.dirname(__file__),'overpass.log'))
+handler.setLevel(logging.INFO)
+formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+handler.setFormatter(formatter)
+logger.addHandler(handler)
 
 
 def add_errors_from_query(mission_type, elements):
