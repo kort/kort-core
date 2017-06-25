@@ -19,7 +19,7 @@ bug.language.re.description=
 bug.track.re.description=
 bug.name_of_street.re.description=
 bug.cuisine_of_restaurant.re.description=
-bug.opening_hours.re.description=
+bug.opening_hours.re.description=A valid date/time value must be entered.
 bug.level.re.description=The value must be between 1 and 200.
 
 # badge names
