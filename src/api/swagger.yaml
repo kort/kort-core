@@ -96,10 +96,7 @@ paths:
             $ref: '#/definitions/missionSolution'
       responses:
         200:
-          description: submit a mission solution
-      responses:
-        200:
-          description: returns newly aquired achievements
+          description: submit a mission solution, returns newly aquired achievements
           schema:
             type: array
             items:
