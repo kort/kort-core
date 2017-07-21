@@ -17,7 +17,6 @@ paths:
       summary: get user information
       parameters:
         - $ref: '#/parameters/user_id'
-          required: true
         - name: Authorization
           in: header
           description: the user secret given after succesful OAuth login
@@ -202,6 +201,7 @@ parameters:
     description: unique user id
     in: path
     type: integer
+    required: true
   schema_id:
     name: schema_id
     description: schema id
@@ -224,11 +224,13 @@ parameters:
       - node
       - way
       - relation
+    required: true
   osm_id:
     name: osm_id
     description: the osm id
     in: path
     type: integer
+    required: true
 
 
 definitions:
