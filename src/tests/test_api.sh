@@ -8,13 +8,21 @@ if [ ! -x "$HTTP" ]; then
     exit 1
 fi
 
-URL=:5000/v0.1
-
+URL=:5000/v1.0
+#URL=https://kort.dev.ifs.hsr.ch/v1.0
 set -x
 
-http PUT $URL/users/1 name=foo name=test username=username mission_count:=0 koin_count:=0 oauth_provider=google oauth_user_id=ouser pic_url=htttp://gravatar.com secret=nosecret token=token logged_in:=true last_login=2015-07-07T15:49:51.230+02:00
-http $URL/users/1
-http PUT $URL/users/1 name=otherfoo name=othertest username=username mission_count:=0 koin_count:=0 oauth_provider=google oauth_user_id=ouser pic_url=htttp://gravatar.com secret=nosecret token=token logged_in:=true last_login=2015-07-07T15:49:51.230+02:00
-http $URL/users/1
-http $URL/users name==test
-http DELETE $URL/users/1
+http GET $URL/achievements user_id==-1 lang==en
+
+http GET $URL/highscore type==all limit==10
+
+http GET $URL/missions user_id==-1 lat==47.23 lon==8.12 radius==5000 limit==1 lang==en
+
+http GET $URL/missions/osm/node/2810732510
+
+http POST $URL/missions/15/43394950/solution solution:='{"koins": 0, "lang": "en", "option": "string", "osm_id": 0, "solved": false, "userId": 0, "value": "string"}'
+
+http GET $URL/users/-1 Authorization:'the_secret'
+
+http GET $URL/statistics
+
