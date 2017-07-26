@@ -112,17 +112,20 @@ def create_new_achievements(user_id, lang, mission_type):
     # per day achievements
     q = db_session.query(func.count('*')).filter(api.models.Solution.user_id == user_id).\
         group_by(func.to_char(api.models.Solution.create_date, "DD.MM.YYYY"))
-    max_number_of_missions_per_day = max(q.all())[0]
-    if (max_number_of_missions_per_day == 6):
-        new_badge = db_session.query(api.models.Badge).\
-        filter(api.models.Badge.name.like('six_per_day')).all()
-        all_new_badges.extend(new_badge)
+    if len(q.all()) != 0:
+        max_number_of_missions_per_day = max(q.all())[0]
+        if (max_number_of_missions_per_day == 6):
+            new_badge = db_session.query(api.models.Badge).\
+            filter(api.models.Badge.name.like('six_per_day')).all()
+            all_new_badges.extend(new_badge)
 
     # highscore achievements
-    rank = db_session.query(api.models.Highscore).filter(api.models.Highscore.user_id == user_id).first().rank
-    if rank >= 1 and rank <= 3:
-        all_new_badges.extend(
-            get_not_achieved_badges_highscore(user_badge_ids=user_badge_ids, rank=rank))
+    q_highscore = db_session.query(api.models.Highscore).filter(api.models.Highscore.user_id == user_id).first()
+    if q_highscore:
+        rank = q_highscore.rank
+        if rank >= 1 and rank <= 3:
+            all_new_badges.extend(
+                get_not_achieved_badges_highscore(user_badge_ids=user_badge_ids, rank=rank))
 
     for row in all_new_badges:
         logger.debug('new achievement '+row.title)
