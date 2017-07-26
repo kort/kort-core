@@ -12,8 +12,9 @@ before_script:
   - psql -c 'create database travis_ci_test;' -U postgres
   - cp config/database.yml.travis config/database.yml
 script:
+#  - python src/api/api/create_db.py
   - python src/api/app.py > /dev/null & nosetests --with-coverage
-  - sh src/tests/test_api.sh
+#  - sh src/tests/test_api.sh
 branches:
   only:
     - master
