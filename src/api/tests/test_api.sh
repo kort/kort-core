@@ -8,8 +8,8 @@ if [ ! -x "$HTTP" ]; then
     exit 1
 fi
 
-URL=:5000/v1.0
-#URL=https://kort.dev.ifs.hsr.ch/v1.0
+#URL=:5000/v1.0
+URL=https://kort.dev.ifs.hsr.ch/v1.0
 set -x
 
 http GET $URL/achievements user_id==-1 lang==en
