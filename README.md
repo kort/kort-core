@@ -35,8 +35,10 @@ docker-compose build && docker-compose up -d tokeninfo api nginx
 update
 ```shell
  docker exec -d kortcore_postgres_1 su -c "docker-entrypoint-initdb.d/update/update_db.sh -k" -s /bin/sh postgres
- -k skip keepright update
- -o skip overpass update
- log file for overpass update
+ # -k skip keepright update
+ # -o skip overpass update
+ # or via cron
+ docker exec -d kortcore_postgres_1 cron
+ #log file for overpass update
  docker exec kortcore_postgres_1 su -c "tail -f docker-entrypoint-initdb.d/mission_creator/overpass.log" -s /bin/sh postgres
 ```

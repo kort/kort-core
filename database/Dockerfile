@@ -6,12 +6,22 @@ RUN apt-get update && apt-get install -y locales && rm -rf /var/lib/apt/lists/* 
 	&& localedef -i en_US -c -f UTF-8 -A /usr/share/locale/locale.alias en_US.UTF-8
 ENV LANG en_US.utf8
 
+# install wget
 RUN  apt-get update \
   && apt-get install -y wget \
   && rm -rf /var/lib/apt/lists/*
 
+## install cron
+RUN apt-get update && apt-get -y install cron
+# Add crontab file in the cron directory
+ADD crontab /etc/cron.d/updater
+# Give execution rights on the cron job
+RUN chmod 0644 /etc/cron.d/updater
+# Create the log file to be able to run tail
+RUN touch /var/log/cron.log
+
+# install python
 RUN apt-get update \
-    && apt-get upgrade -y \
     && apt-get install -y \
     build-essential \
     ca-certificates \
@@ -50,11 +60,10 @@ ADD https://raw.githubusercontent.com/pypa/pip/701a80f451a62aadf4eeb21f371b45424
 RUN python3.4 /root/get-pip.py
 RUN pip3.4 install -r /docker-entrypoint-initdb.d/mission_creator/requirements.txt
 
-### copy and run initialization scripts
+#### copy and run initialization scripts
 COPY 00_init_db.sql /docker-entrypoint-initdb.d/
 COPY 02_setup_postgis.sh /docker-entrypoint-initdb.d/
 COPY 01_setup_keepright_db.sh /docker-entrypoint-initdb.d/
 COPY 03_setup_osm_errors_db.sh /docker-entrypoint-initdb.d/
 COPY 04_setup_all_errors_db.sh /docker-entrypoint-initdb.d/
 COPY 05_setup_kort_db.sh /docker-entrypoint-initdb.d/
-
