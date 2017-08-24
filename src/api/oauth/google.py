@@ -36,10 +36,16 @@ def verify_user_id():
     req = requests.get(verifyURL, payload)
     data = req.json()
     id = data['sub']
+    email = data['email']
     user = user_access.get_user_secret('google', id)
+    user_by_mail = user_access.get_user_secret_by_mail('google', email)
     logger.debug(' user'+str(id)+'verified')
     if user:
         # update user details
+        logger.debug('update user')
+        user_access.update_user('google', user.secret, data)
+    elif user_by_mail:
+        user = user_by_mail
         logger.debug('update user')
         user_access.update_user('google', user.secret, data)
     else:
@@ -67,10 +73,15 @@ def authorized():
     session['google_token'] = (resp['access_token'], '')
     me = google.get('userinfo')
     user = user_access.get_user_secret('google', me.data['id'])
+    user_by_mail = user_access.get_user_secret_by_mail('google', me.data['email'])
     if user:
         # update user details
         secret = user.secret
         user_access.update_user('google', secret, me.data)
+    elif user_by_mail:
+        user = user_by_mail
+        secret = user.secret
+        user_access.update_user('google', user.secret, me.data)
     else:
         secret = user_access.create_user('google',me.data, get_google_oauth_token()[0])
     return jsonify({"secret": secret})

@@ -14,6 +14,10 @@ def get_user_secret(provider: str, id: str) -> object:
     user = db_session.query(api.models.User).filter(api.models.User.oauth_user_id == id).filter(api.models.User.oauth_provider == provider).one_or_none()
     return user
 
+def get_user_secret_by_mail(provider: str, email: str) -> object:
+    user = db_session.query(api.models.User).filter(api.models.User.email == email).filter(api.models.User.oauth_provider == provider).one_or_none()
+    return user
+
 
 def update_user(provider: str, secret: str, data: str):
     if provider is 'google':
