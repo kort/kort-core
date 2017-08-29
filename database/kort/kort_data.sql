@@ -150,7 +150,6 @@ insert into kort.answer (answer_id, type, value, title, sorting) VALUES (1034, '
 insert into kort.answer (answer_id, type, value, title, sorting) VALUES (1035, 'missing_cuisine', 'donut', 'answer.missing_cuisine.donut', 450);
 insert into kort.answer (answer_id, type, value, title, sorting) VALUES (1036, 'missing_cuisine', 'friture', 'answer.missing_cuisine.friture', 460);
 insert into kort.answer (answer_id, type, value, title, sorting) VALUES (1037, 'missing_cuisine', 'mediterranean', 'answer.missing_cuisine.mediterranean', 470);
-insert into kort.answer (answer_id, type, value, title, sorting) VALUES (1038, 'missing_cuisine', 'italian;pizza', 'answer.missing_cuisine.italian;pizza', 480);
 insert into kort.answer (answer_id, type, value, title, sorting) VALUES (1039, 'missing_cuisine', 'crepe', 'answer.missing_cuisine.crepe', 490);
 insert into kort.answer (answer_id, type, value, title, sorting) VALUES (1040, 'missing_cuisine', 'breakfast', 'answer.missing_cuisine.breakfast', 500);
 insert into kort.answer (answer_id, type, value, title, sorting) VALUES (1041, 'missing_cuisine', 'bavarian', 'answer.missing_cuisine.bavarian', 510);
