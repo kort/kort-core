@@ -9,7 +9,7 @@ if [ ! -x "$HTTP" ]; then
 fi
 
 #URL=:5000/v1.0
-URL=https://test.kort.dev.ifs.hsr.ch/v1.0
+URL=https://kort.dev.ifs.hsr.ch/v1.0
 set -x
 
 http GET $URL/achievements user_id==-1 lang==en
