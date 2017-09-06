@@ -27,14 +27,14 @@ class BaseConfig(object):
         DEBUG = True
         DB_NAME = 'osm_bugs'
         DB_PASSWORD = 'postgres'
-        DB_USER = 'osm'
+        DB_USER = 'postgres'
         DB_SERVICE = 'localhost'
         DB_PORT = 5432
         SQLALCHEMY_DATABASE_URI = 'postgresql://{0}:{1}@{2}:{3}/{4}'.format(
             DB_USER, DB_PASSWORD, DB_SERVICE, DB_PORT, DB_NAME
         )
-        OSM_USER = 'kort tester'
-        OSM_PASSWORD = 'BFRhzeh{'
+        OSM_USER = 'osm_user'
+        OSM_PASSWORD = 'osm_password'
         OSM_API_URL = 'https://api06.dev.openstreetmap.org'
 
     SQLALCHEMY_TRACK_MODIFICATIONS = True

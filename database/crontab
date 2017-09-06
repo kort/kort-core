@@ -1,4 +1,6 @@
 # run every day at midnight
 0 22 * * * postgres /docker-entrypoint-initdb.d/update/update_db.sh -o
+# run every day one hour before midnight
+0 21 * * * postgres /usr/bin/python3.4 /docker-entrypoint-initdb.d/kort2osm/kort2osm.py
 # An empty line is required at the end of this file for a valid cron file.
 

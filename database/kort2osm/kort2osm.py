@@ -1,3 +1,4 @@
+#!/usr/bin/python
 """
 kort-to-osm
 
