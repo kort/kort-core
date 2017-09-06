@@ -1,3 +1,4 @@
 psycopg2==2.6
 docopt==0.6.2
 osmapi==0.8.1
+pyaml==13.12.0

@@ -16,28 +16,27 @@ Options:
 
 """
 import os
-import logging
+import yaml
 
 import docopt
-
 from helper import osm_fix
+import logging
+import logging.config
 
+def setup_logging(
+        default_path='logging.yml',
+        default_level=logging.DEBUG):
+    """
+    Setup logging configuration
+    """
+    path = os.path.join(os.path.dirname(__file__),default_path)
+    if os.path.exists(path):
+        with open(path, 'rt') as f:
+            conf = yaml.load(f.read())
+        logging.config.dictConfig(conf)
+    else:
+        logging.basicConfig(level=default_level)
 
-__location__ = os.path.realpath(
-    os.path.join(
-        os.getcwd(),
-        os.path.dirname(__file__)
-    )
-)
-
-
-def setup_logging():
-    logger=logging.getLogger(__name__)
-    handler = logging.FileHandler(os.path.join(os.path.dirname(__file__), 'kort2osm.log'))
-    handler.setLevel(logging.INFO)
-    formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-    handler.setFormatter(formatter)
-    logger.addHandler(handler)
 
 if __name__ == '__main__':
     arguments = docopt.docopt(__doc__, version='kort-to-osm 0.1')
