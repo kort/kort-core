@@ -51,14 +51,24 @@ COPY update/* /docker-entrypoint-initdb.d/update/
 
 COPY mission_creator/* /docker-entrypoint-initdb.d/mission_creator/
 
+COPY kort2osm/helper/* /docker-entrypoint-initdb.d/kort2osm/helper/
+COPY kort2osm/* /docker-entrypoint-initdb.d/kort2osm/
+
 # create overpass log file for user postgres
 RUN touch /docker-entrypoint-initdb.d/mission_creator/overpass.log
 RUN chown -R postgres:postgres /docker-entrypoint-initdb.d/mission_creator/overpass.log
+
+RUN touch /docker-entrypoint-initdb.d/kort2osm/kort2osm.log
+RUN touch /docker-entrypoint-initdb.d/kort2osm/kort2osm_error.log
+RUN chown -R postgres:postgres /docker-entrypoint-initdb.d/kort2osm/kort2osm.log
+RUN chown -R postgres:postgres /docker-entrypoint-initdb.d/kort2osm/kort2osm_error.log
 
 # install python dependencies for mission creator
 ADD https://raw.githubusercontent.com/pypa/pip/701a80f451a62aadf4eeb21f371b45424821582b/contrib/get-pip.py /root/get-pip.py
 RUN python3.4 /root/get-pip.py
 RUN pip3.4 install -r /docker-entrypoint-initdb.d/mission_creator/requirements.txt
+RUN pip3.4 install -r /docker-entrypoint-initdb.d/kort2osm/requirements.txt
+
 
 #### copy and run initialization scripts
 COPY 00_init_db.sql /docker-entrypoint-initdb.d/
