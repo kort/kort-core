@@ -1,5 +1,6 @@
 import logging
 from connexion import NoContent
+from flask import request
 from geoalchemy2 import WKTElement
 import osmapi
 import traceback
@@ -46,14 +47,17 @@ def get_missions(lat, lon, radius, limit, lang, user_id):
 
 
 def put_mission_solution(schema_id, error_id, body):
-
+    s = body['solution']
+    user_id = s['userId']
+    secret = request.headers.get('Authorization')
+    user = db_session.query(api.models.User).filter(api.models.User.id == user_id). \
+        filter(api.models.User.secret == secret).one_or_none()
+    if not user:
+        return NoContent, 401
     try:
         q = db_session.query(api.models.kort_errors).filter(api.models.kort_errors.errorId == error_id).filter(
             api.models.kort_errors.schema == schema_id)
 
-        s = body['solution']
-
-        user_id = s['userId']
         koins = s['koins']
         answer = s['value']
         solved = s['solved']
