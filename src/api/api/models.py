@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
 import logging
+
+import copy
 from sqlalchemy import Column, DateTime, String, Integer, BigInteger, Boolean, create_engine, UniqueConstraint, Numeric
 from sqlalchemy import ForeignKey
 from sqlalchemy import PrimaryKeyConstraint
@@ -114,9 +116,9 @@ class kort_errors(Base):
         d['title'] = locale.translate(lang, d['title'])
 
         input_type = MissionTypeLoader()
-        d['inputType'] = input_type.get_input_type(lang=lang, type_id=d['error_type'], input_type_name= d.pop('view_type'),
+        d['inputType'] = copy.deepcopy(input_type.get_input_type(lang=lang, type_id=d['error_type'], input_type_name= d.pop('view_type'),
                                                    re_description=d.pop('constraint_re_description'), re=d.pop('constraint_re'),
-                                                   lower_bound=d.pop('constraint_lower_bound'), upper_bound=d.pop('constraint_upper_bound'))
+                                                   lower_bound=d.pop('constraint_lower_bound'), upper_bound=d.pop('constraint_upper_bound')))
         return d
 
 

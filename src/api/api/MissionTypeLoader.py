@@ -1,5 +1,7 @@
 import api.models
 import logging
+
+import copy
 from i18n import I18n
 import traceback
 
@@ -44,7 +46,7 @@ class MissionTypeLoader:
                     'lowerBound': lower_bound or '',
                     'upperBound': upper_bound or ''
                 },
-                'options': locale.translate_list(lang, self.options.get(type_id, [])),
+                'options': locale.translate_list(lang, copy.deepcopy(self.options.get(type_id, []))),
                 'values': self.values.get(type_id, []),
                 'name': locale.translate(lang, input_type_name)
             }
