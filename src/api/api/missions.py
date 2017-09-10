@@ -58,7 +58,6 @@ def put_mission_solution(schema_id, error_id, body):
         q = db_session.query(api.models.kort_errors).filter(api.models.kort_errors.errorId == error_id).filter(
             api.models.kort_errors.schema == schema_id)
 
-        koins = s['koins']
         answer = s['value']
         solved = s['solved']
         lang = s['lang']
@@ -68,6 +67,9 @@ def put_mission_solution(schema_id, error_id, body):
         if q.count() == 1:
             error = q.first()
             error_type = error.error_type
+            koins = error.fix_koin_count
+            if s['stats_enabled']:
+                koins += 1
 
             # write solution to db
             new_solution = api.models.Solution(

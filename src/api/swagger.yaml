@@ -432,9 +432,10 @@ definitions:
       option:
         type: string
         description: the option value if any
-      koins:
-        type: integer
-        description: number of koins earned
+      stats_enabled:
+        type: boolean
+        default: false
+        description: whether or not stats are enabled
       solved:
         type: boolean
         description: whether the mission was solved or not
