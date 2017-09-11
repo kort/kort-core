@@ -1,4 +1,5 @@
 DEBUG=True
+# secret key needs to be set as environment var in order to be able to read other environment variables
 SECRET_KEY=mySecretKey
 DB_NAME=travis_ci_test
 DB_USER=postgres

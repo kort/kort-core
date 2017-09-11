@@ -7,6 +7,7 @@ import os
 class BaseConfig(object):
 
     # check which environment it runs on
+    # secret key needs to be set as environment var in order to be able to read other environment variables
     if os.getenv('SECRET_KEY'):
         SECRET_KEY = os.environ['SECRET_KEY']
         DEBUG = os.environ['DEBUG']
