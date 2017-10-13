@@ -42,3 +42,11 @@ update
  #log file for overpass update
  docker exec kortcore_postgres_1 su -c "tail -f docker-entrypoint-initdb.d/mission_creator/overpass.log" -s /bin/sh postgres
 ```
+
+# Adding New Missions
+
+* Add a new entry to the table `kort.error_type` with a new `error\_type\_id` (kort_data.sql).
+* If additional achievement badges should be available, create the appropriate entries in this file as well.
+* Create an appropriate QL Overpass query. Add also the `error_type_id` chosen in the step before (overpass_queries.py)
+* In the next import run these new missions should be added to the database and available to the client
+* Do not forget to add the appropriate language translations to the localization files
