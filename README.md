@@ -45,7 +45,7 @@ update
 
 # Adding New Missions
 
-* Add a new entry to the table `kort.error_type` with a new `error\_type\_id` (kort_data.sql).
+* Add a new entry to the table `kort.error_type` with a new `error_type_id` (kort_data.sql).
 * If additional achievement badges should be available, create the appropriate entries in this file as well.
 * Create an appropriate QL Overpass query. Add also the `error_type_id` chosen in the step before (overpass_queries.py)
 * In the next import run these new missions should be added to the database and available to the client
